@@ -1,15 +1,20 @@
-import json
+try:
+    import simplejson as json
+except ImportError:
+    import json
+import threading
 from urllib import urlencode
 import urllib2
 
 
-class Client(object):
+class Client(threading.local):
     API_URL = 'https://api.poundpay.com'
     API_VERSION = 'silver'
 
     def __init__(self, developer_sid, auth_token, api_url=API_URL,
                  api_version=API_VERSION):
         self.base_url = '{}/{}'.format(api_url, api_version)
+        self.developer_sid = developer_sid
 
         # Use Python's default basic auth handler.  The problem here is that
         # it makes an extra round-trip everytime to determine if the request
