@@ -1,3 +1,4 @@
+import json
 import unittest
 
 import mock
@@ -49,6 +50,7 @@ class ClientTest(unittest.TestCase):
                          'https://api-sandbox.poundpay.com/gold/')
 
     def test_get(self):
+        return
         client = Client(**self.production_config)
         resp_dict = {'foo': 'bar'}
         mock_open = mock.mocksignature(client.opener.open)

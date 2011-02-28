@@ -20,7 +20,7 @@ class Client(threading.local):
         if not developer_sid.startswith('DV'):
             raise ValueError('developer_sid must start with DV')
 
-        self.base_url = '{}/{}/'.format(api_url, api_version)
+        self.base_url = '%s/%s/' % (api_url, api_version)
         self.developer_sid = developer_sid
 
         self.opener = urllib2.build_opener()

@@ -5,11 +5,9 @@ class Resource(object):
         self.__dict__.update(kwargs)
 
     def __repr__(self):
-        attrs = ', '.join(['{}={}'.format(k, repr(v)) for k, v in
+        attrs = ', '.join(['%s=%s' % (k, repr(v)) for k, v in
                            self.__dict__.iteritems()])
-        return '{classname}({attrs})'.format(
-            classname=self.__class__.__name__ ,
-            attrs=attrs)
+        return '%s(%s)' % (self.__class__.__name__ , attrs)
 
     @classmethod
     def all(cls):
