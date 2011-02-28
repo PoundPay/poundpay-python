@@ -1,9 +1,3 @@
-try:
-    import simplejson as json
-except ImportError:
-    import json
-
-
 class Resource(object):
     client = None
 
@@ -19,12 +13,12 @@ class Resource(object):
 
     @classmethod
     def all(cls):
-        resp = cls.client.get(cls._path)
+        resp = cls.client.get(cls._name)
         return [cls(**attrs) for attrs in resp.json[cls._name]]
 
     @classmethod
     def find(cls, sid):
-        resp = cls.client.get(cls._path + sid)
+        resp = cls.client.get(cls._get_path(sid))
         return cls(**resp.json)
 
     def save(self):
@@ -36,14 +30,18 @@ class Resource(object):
         return self
 
     def delete(self):
-        self.client.delete(cls._path + sid)
+        self.client.delete(cls._get_path(self.sid))
 
     @classmethod
     def _update(cls, sid, **attrs):
-        resp = cls.client.put(cls._path + sid, attrs)
+        resp = cls.client.put(cls._get_path(sid), attrs)
         return resp.json
 
     @classmethod
     def _create(cls, **attrs):
-        resp = cls.client.post(cls._path, attrs)
+        resp = cls.client.post(cls._name, attrs)
         return resp.json
+
+    @classmethod
+    def _get_path(cls, sid):
+        return '%s/%s' % (cls._name, sid)

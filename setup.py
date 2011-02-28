@@ -13,4 +13,6 @@ setup(
     author_email='devsupport@poundpay.com',
     description='Payments platform for marketplaces',
     packages=['poundpay'],
+    test_suite='nose.collector',
+    install_requires=['simplejson']
 )
