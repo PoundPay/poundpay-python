@@ -6,7 +6,7 @@ except ImportError:
 
 setup(
     name='Poundpay',
-    version='0.0.1',
+    version='0.0.2',
     url='https://dev.poundpay.com/',
     license='BSD',
     author='Matin Tamizi',
