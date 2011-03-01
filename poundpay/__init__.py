@@ -7,5 +7,5 @@ from .payments import Payment
 __all__ = ['Client', 'Developer', 'Resource', 'Payment']
 
 
-def configure(**config):
-    Resource.client = Client(**config)
+def configure(developer_sid, auth_token, api_url=None, api_version=None):
+    Resource.client = Client(developer_sid, auth_token, api_url, api_version)
