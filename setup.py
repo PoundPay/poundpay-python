@@ -8,17 +8,15 @@ specifically for these types of transactions, as opposed to direct
 payments from customer to business. In short, PoundPay is the payments
 platform for marketplaces.
 
-
 Install
--------
+```````
 
 ::
 
     $ easy_install poundpay
 
-
 Configure
----------
+`````````
 
 ::
 
@@ -40,9 +38,8 @@ Configure
     import poundpay
     poundpay.configure(**CONFIG['production'])
 
-
 Creating a Payment
------------------
+``````````````````
 
 ::
 
@@ -56,9 +53,8 @@ Creating a Payment
         description='Beats by Dr. Dre',
     ).save()
 
-
 Serving IFRAME
---------------
+``````````````
 
 ::
 
@@ -85,9 +81,8 @@ Serving IFRAME
       });
     </script>
 
-
 Links
------
+`````
 
 * `Developer Documentation <https://dev.poundpay.com/>`_
 * `Website  <https://poundpay.com/>`_
