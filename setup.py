@@ -1,4 +1,14 @@
 """
+PoundPay
+--------
+
+PoundPay enables developers to build apps which facilitate
+transactions between two of their users. PoundPay is designed
+specifically for these types of transactions, as opposed to direct
+payments from customer to business. In short, PoundPay is the payments
+platform for marketplaces.
+
+
 Install
 -------
 
@@ -75,6 +85,13 @@ Serving IFRAME
       });
     </script>
 
+
+Links
+-----
+
+* `Developer Documentation <https://dev.poundpay.com/>`_
+* `Website  <https://poundpay.com/>`_
+
 """
 
 try:
@@ -91,6 +108,7 @@ setup(
     author='Matin Tamizi, Mahmoud Abdelkader',
     author_email='devsupport@poundpay.com',
     description='Payments platform for marketplaces',
+    long_description=__doc__,
     packages=['poundpay'],
     install_requires=[
         'simplejson',
