@@ -1,7 +1,8 @@
 import base64
 import threading
-from urllib import urlencode
 import urllib2
+from urllib import urlencode
+
 
 try:
     import simplejson as json
@@ -10,11 +11,14 @@ except ImportError:
 
 
 class Client(threading.local):
+
     API_URL = 'https://api.poundpay.com'
     API_VERSION = 'silver'
 
     def __init__(self, developer_sid, auth_token, api_url=API_URL,
                  api_version=API_VERSION):
+        super(self.__class__, self).__init__()
+
         if not (developer_sid and auth_token):
             raise ValueError('developer_sid and auth_token required')
         if not developer_sid.startswith('DV'):
