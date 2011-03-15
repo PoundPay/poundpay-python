@@ -60,3 +60,15 @@ class ClientTest(unittest.TestCase):
                                mocksignature=True):
             resp = client.get('payments')
         self.assertEqual(resp.json, resp_dict)
+        mock_open.return_value.read.assert_called_once_with()
+
+    def test_post(self):
+        client = Client(**self.production_config)
+        resp_body_dict = {'foo': 'bar'}
+        mock_open = mock.mocksignature(client.opener.open)
+        mock_resp = mock.Mock()
+        mock_resp.read = mock.Mock(return_value=json.dumps(resp_body_dict))
+        mock_open.mock.return_value = mock_resp
+        with mock.patch.object(client.opener, 'open', new=mock_open):
+            resp = client.post('payments', resp_body_dict)
+        self.assertEqual(resp.json, resp_body_dict)
