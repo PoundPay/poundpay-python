@@ -6,7 +6,7 @@ Poundpay is a payments platform for marketplaces
 Install
 -------
 
-    pip install poundpay
+    easy_install poundpay
 
 
 
