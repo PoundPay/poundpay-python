@@ -50,11 +50,13 @@ class ClientTest(unittest.TestCase):
                          'https://api-sandbox.poundpay.com/gold/')
 
     def test_get(self):
-        return
         client = Client(**self.production_config)
         resp_dict = {'foo': 'bar'}
-        mock_open = mock.mocksignature(client.opener.open)
-        mock_open.return_value = json.dumps(resp_dict)
-        with mock.patch.object(client.opener, 'open', new=mock_open):
+        mock_open = mock.Mock()
+        mock_open.return_value.read.return_value = json.dumps(resp_dict)
+        with mock.patch.object(client.opener,
+                               'open',
+                               mock_open,
+                               mocksignature=True):
             resp = client.get('payments')
         self.assertEqual(resp.json, resp_dict)
