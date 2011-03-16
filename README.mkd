@@ -66,7 +66,6 @@ Serving IFRAME
         success: handlePaymentSuccess,
         error: handlePaymentError,
         cardholder_name: "Fred Nietzsche", // Optional
-        phone_number: "4085551234", // Optional
         server: "https://www-sandbox.poundpay.com"  // Exclude for production
       });
     </script>
