@@ -29,7 +29,10 @@ class Client(threading.local):
         authstring = base64.b64encode('%s:%s' % (developer_sid, auth_token))
         self.opener.addheaders.append(('Authorization', 'Basic ' + authstring))
 
-    def get(self, path):
+    def get(self, path, **params):
+        if params:
+            params = urlencode(params)
+            path = path.rstrip('/') + '/?' + params
         req = urllib2.Request(self.base_url + path)
         resp = self.opener.open(req)
         resp.body = resp.read()

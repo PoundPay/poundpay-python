@@ -6,4 +6,4 @@ class Developer(Resource):
 
     @classmethod
     def find_me(cls):
-        return cls.find(cls._client.developer_sid)
+        return cls.find(cls.client.developer_sid)

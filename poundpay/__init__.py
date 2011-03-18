@@ -8,4 +8,4 @@ __all__ = ['Client', 'Developer', 'Resource', 'Payment']
 
 
 def configure(developer_sid, auth_token, api_url=None, api_version=None):
-    Resource._client = Client(developer_sid, auth_token, api_url, api_version)
+    Resource.client = Client(developer_sid, auth_token, api_url, api_version)
