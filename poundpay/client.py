@@ -16,7 +16,7 @@ class Client(threading.local):
     API_VERSION = 'silver'
 
     def __init__(self, developer_sid, auth_token, api_url=API_URL,
-                 api_version=API_VERSION):
+                 api_version=API_VERSION, opener_handlers=None):
         if not (developer_sid and auth_token):
             raise ValueError('developer_sid and auth_token required')
         if not developer_sid.startswith('DV'):
@@ -25,7 +25,8 @@ class Client(threading.local):
         self.base_url = '%s/%s/' % (api_url, api_version)
         self.developer_sid = developer_sid
 
-        self.opener = urllib2.build_opener()
+        opener_handlers = opener_handlers if opener_handlers else []
+        self.opener = urllib2.build_opener(*opener_handlers)
         authstring = base64.b64encode('%s:%s' % (developer_sid, auth_token))
         self.opener.addheaders.append(('Authorization', 'Basic ' + authstring))
 

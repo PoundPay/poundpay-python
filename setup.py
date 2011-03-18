@@ -97,7 +97,7 @@ except ImportError:
 
 setup(
     name='Poundpay',
-    version='0.0.6',
+    version='0.0.7',
     url='https://dev.poundpay.com/',
     license='BSD',
     author='Matin Tamizi, Mahmoud Abdelkader',
