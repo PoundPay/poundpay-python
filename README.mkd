@@ -34,7 +34,7 @@ Configure
 Creating a Payment
 -----------------
 
-    payment = Payment(
+    payment = poundpay.Payment(
         amount=20000,
         payer_fee_amount=0,
         payer_email_address='fred@example.com',
