@@ -33,6 +33,12 @@ class ClientTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             Client(config['auth_token'], config['developer_sid'])
 
+    def test_default_api_version(self):
+        config = self.production_config
+        config['api_version'] = None
+        client = Client(**config)
+        self.assertTrue(client.base_url.endswith(Client.API_VERSION + '/'))
+
     def test_default_url_and_version(self):
         config = self.production_config
         client = Client(**config)
