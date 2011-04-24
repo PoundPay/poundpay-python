@@ -1,17 +1,23 @@
-Poundpay
-=====
+PoundPay
+--------
 
-Poundpay is a payments platform for marketplaces
+PoundPay enables developers to build apps which facilitate
+transactions between two of their users. PoundPay is designed
+specifically for these types of transactions, as opposed to direct
+payments from customer to business. In short, PoundPay is the payments
+platform for marketplaces.
 
 Install
--------
+```````
 
-    easy_install poundpay
+::
 
-
+    $ easy_install poundpay
 
 Configure
----------
+`````````
+
+::
 
     CONFIG = {
         'sandbox': {
@@ -30,11 +36,12 @@ Configure
     import poundpay
     poundpay.configure(**CONFIG['production'])
 
-
 Dealing with Payments
----------------------
+`````````````````````
 
 Creating a new payment:
+
+::
 
     payment = poundpay.Payment(
         amount=20000,
@@ -47,27 +54,39 @@ Creating a new payment:
 
 Fetching the list of all payments:
 
+::
+
     payment_list = poundpay.Payment.all()
 
 Fetching an existing payment:
+
+::
 
     payment = poundpay.Payment.find(«payment_id_string»)
 
 Moving an authorized payment to escrow (this charges the payer):
 
+::
+
     payment.escrow()
 
 Releasing a payment currently in escrow (this sends the payment to the recipient):
+
+::
 
     payment.release()
 
 Canceling a payment currently in escrow (this refunds the payer):
 
+::
+
     payment.cancel()
 
 
 Serving IFRAME
---------------
+``````````````
+
+::
 
     <script src="https://www.poundpay.com/js/poundpay.js"></script>
 
@@ -87,6 +106,13 @@ Serving IFRAME
         success: handlePaymentSuccess,
         error: handlePaymentError,
         cardholder_name: "Fred Nietzsche", // Optional
+        phone_number: "4085551234", // Optional
         server: "https://www-sandbox.poundpay.com"  // Exclude for production
       });
     </script>
+
+Links
+`````
+
+* `Developer Documentation <https://dev.poundpay.com/>`_
+* `Website  <https://poundpay.com/>`_
