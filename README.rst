@@ -36,10 +36,8 @@ Configure
     import poundpay
     poundpay.configure(**CONFIG['production'])
 
-Dealing with Payments
-`````````````````````
-
-Creating a new payment:
+Creating a Payment
+``````````````````
 
 ::
 
@@ -51,37 +49,6 @@ Creating a new payment:
         recipient_email_address='david@example.com',
         description='Beats by Dr. Dre',
     ).save()
-
-Fetching the list of all payments:
-
-::
-
-    payment_list = poundpay.Payment.all()
-
-Fetching an existing payment:
-
-::
-
-    payment = poundpay.Payment.find(«payment_id_string»)
-
-Moving an authorized payment to escrow (this charges the payer):
-
-::
-
-    payment.escrow()
-
-Releasing a payment currently in escrow (this sends the payment to the recipient):
-
-::
-
-    payment.release()
-
-Canceling a payment currently in escrow (this refunds the payer):
-
-::
-
-    payment.cancel()
-
 
 Serving IFRAME
 ``````````````
@@ -110,6 +77,19 @@ Serving IFRAME
         server: "https://www-sandbox.poundpay.com"  // Exclude for production
       });
     </script>
+
+
+Payment methods
+```````````````
+
+::
+
+    list_of_payments = Poundpay.Payment.all()
+    payment = Poundpay.Payment.find(payment_sid)
+    payment.escrow()   # AUTHORIZED -> ESCROWED.  Credit card is charged
+    payment.release()  # ESCROWED   -> RELEASED.  Recipient receives money
+    payment.cancel()   # ESCROWED   -> CANCELED.  Payer receives refund
+
 
 Links
 `````
