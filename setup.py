@@ -38,20 +38,52 @@ Configure
     import poundpay
     poundpay.configure(**CONFIG['production'])
 
-Creating a Payment
-``````````````````
+Dealing with Payments
+`````````````````````
+
+Creating a new payment:
 
 ::
 
-    payment = Payment(
+    payment = poundpay.Payment(
         amount=20000,
         payer_fee_amount=0,
         payer_email_address='fred@example.com',
-        payer_sid='97f51e5c38e211e08625e7af17bae06a',  # Optional
         recipient_fee_amount=500,
         recipient_email_address='david@example.com',
         description='Beats by Dr. Dre',
     ).save()
+
+Fetching the list of all payments:
+
+::
+
+    payment_list = poundpay.Payment.all()
+
+Fetching an existing payment:
+
+::
+
+    payment = poundpay.Payment.find(«payment_id_string»)
+
+Moving an authorized payment to escrow (this charges the payer):
+
+::
+
+    payment.escrow()
+
+Releasing a payment currently in escrow (this sends the payment to the recipient):
+
+::
+
+    payment.release()
+
+Canceling a payment currently in escrow (this refunds the payer):
+
+::
+
+    payment.cancel()
+
 
 Serving IFRAME
 ``````````````
