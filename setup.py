@@ -17,7 +17,7 @@ with open('README.rst') as f:
 
 setup(
     name='Poundpay',
-    version='0.0.9',
+    version='0.1.0',
     url='https://dev.poundpay.com/',
     license='BSD',
     author='Matin Tamizi, Mahmoud Abdelkader',
