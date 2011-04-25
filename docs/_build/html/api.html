@@ -1,0 +1,219 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>API - PoundPay Client Library &mdash; PoundPay Python Client v0.0.7 documentation</title>
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.0.7',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="PoundPay Python Client v0.0.7 documentation" href="index.html" />
+    <link rel="prev" title="PoundPay Python Client" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="index.html" title="PoundPay Python Client"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">PoundPay Python Client v0.0.7 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-poundpay">
+<span id="api-poundpay-client-library"></span><span id="api"></span><h1>API - PoundPay Client Library<a class="headerlink" href="#module-poundpay" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="poundpay.Developer">
+<em class="property">class </em><tt class="descclassname">poundpay.</tt><tt class="descname">Developer</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#poundpay.Developer" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Developer resource, represented by a RESTful resource located at
+<tt class="docutils literal"><span class="pre">/developers</span></tt>.</p>
+<dl class="classmethod">
+<dt id="poundpay.Developer.find_me">
+<em class="property">classmethod </em><tt class="descname">find_me</tt><big>(</big><big>)</big><a class="headerlink" href="#poundpay.Developer.find_me" title="Permalink to this definition">¶</a></dt>
+<dd><p>Issue a <tt class="docutils literal"><span class="pre">GET</span> <span class="pre">/developers/&lt;developer_sid&gt;</span></tt></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">developer</span> <span class="o">=</span> <span class="n">poundpay</span><span class="o">.</span><span class="n">Developer</span><span class="o">.</span><span class="n">find_me</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">developer</span><span class="o">.</span><span class="n">sid</span><span class="p">,</span> <span class="s">&#39;YOUR_DEVELOPER_SID&#39;</span>
+<span class="n">developer</span><span class="o">.</span><span class="n">callback_url</span> <span class="o">=</span> <span class="s">&#39;http://marketplace.com/callback/&#39;</span>
+<span class="n">developer</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+<span class="n">developer</span> <span class="o">=</span> <span class="n">poundpay</span><span class="o">.</span><span class="n">Developer</span><span class="o">.</span><span class="n">find_me</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">developer</span><span class="o">.</span><span class="n">callback_url</span><span class="p">,</span> <span class="s">&#39;http://marketplace.com/callback/&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="poundpay.Payment">
+<em class="property">class </em><tt class="descclassname">poundpay.</tt><tt class="descname">Payment</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#poundpay.Payment" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Payment resource, represented by a RESTful resource located at
+<tt class="docutils literal"><span class="pre">/payments</span></tt>.</p>
+<dl class="method">
+<dt id="poundpay.Payment.cancel">
+<tt class="descname">cancel</tt><big>(</big><big>)</big><a class="headerlink" href="#poundpay.Payment.cancel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cancels an <tt class="docutils literal"><span class="pre">ESCROWED</span></tt> payment by refunding the payer. All
+PoundPay fees are refunded back to the developer, as well.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">a <a class="reference internal" href="#poundpay.payments.PaymentCancelError" title="poundpay.payments.PaymentCancelError"><tt class="xref py py-exc docutils literal"><span class="pre">PaymentCancelError</span></tt></a> is thrown
+if the Payment&#8217;s status is not <tt class="docutils literal"><span class="pre">ESCROWED</span></tt></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="poundpay.Payment.escrow">
+<tt class="descname">escrow</tt><big>(</big><big>)</big><a class="headerlink" href="#poundpay.Payment.escrow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Escrows an <tt class="docutils literal"><span class="pre">AUTHORIZED</span></tt> payment by charging the authorized
+payment method associated with the <tt class="docutils literal"><span class="pre">AUTHORIZED</span></tt> payment</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">a <a class="reference internal" href="#poundpay.payments.PaymentEscrowError" title="poundpay.payments.PaymentEscrowError"><tt class="xref py py-exc docutils literal"><span class="pre">PaymentEscrowError</span></tt></a> is thrown if the
+Payment&#8217;s status is not <tt class="docutils literal"><span class="pre">AUTHORIZED</span></tt></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="poundpay.Payment.release">
+<tt class="descname">release</tt><big>(</big><big>)</big><a class="headerlink" href="#poundpay.Payment.release" title="Permalink to this definition">¶</a></dt>
+<dd><p>Releases an <tt class="docutils literal"><span class="pre">ESCROWED</span></tt> payment by paying out the funds to
+a PoundPay account.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">a <a class="reference internal" href="#poundpay.payments.PaymentReleaseError" title="poundpay.payments.PaymentReleaseError"><tt class="xref py py-exc docutils literal"><span class="pre">PaymentReleaseError</span></tt></a> is thrown
+if the Payment&#8217;s status is not <tt class="docutils literal"><span class="pre">ESCROWED</span></tt></p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="poundpay.configure">
+<tt class="descclassname">poundpay.</tt><tt class="descname">configure</tt><big>(</big><em>developer_sid</em>, <em>auth_token</em>, <em>api_url=None</em>, <em>api_version=None</em><big>)</big><a class="headerlink" href="#poundpay.configure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configure a static client object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>developer_sid</strong> &#8211; Your developer sid</li>
+<li><strong>auth_token</strong> &#8211; Your designated authentication token (keep this secret)</li>
+<li><strong>api_url</strong> &#8211; The API URL to hit. Defaults to <tt class="docutils literal"><span class="pre">Client.API_URL</span></tt> when
+client is configured.</li>
+<li><strong>api_version</strong> &#8211; The API Version. Defaults to <tt class="docutils literal"><span class="pre">Client.API_VERSION</span></tt>
+when client is configured.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">poundpay</span>
+<span class="n">poundpay</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s">&#39;YOUR_DEVELOPER_SID&#39;</span><span class="p">,</span> <span class="s">&#39;YOUR_AUTH_TOKEN&#39;</span><span class="p">)</span>
+
+<span class="n">developer</span> <span class="o">=</span> <span class="n">poundpay</span><span class="o">.</span><span class="n">Developer</span><span class="o">.</span><span class="n">find_me</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">developer</span><span class="o">.</span><span class="n">sid</span><span class="p">,</span> <span class="s">&#39;YOUR_DEVELOPER_SID&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<div class="section" id="payment-exceptions">
+<h2>Payment Exceptions<a class="headerlink" href="#payment-exceptions" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="poundpay.payments.PaymentEscrowError">
+<em class="property">class </em><tt class="descclassname">poundpay.payments.</tt><tt class="descname">PaymentEscrowError</tt><a class="headerlink" href="#poundpay.payments.PaymentEscrowError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thrown when an error occurs while attempting to ESCROW a payment</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="poundpay.payments.PaymentReleaseError">
+<em class="property">class </em><tt class="descclassname">poundpay.payments.</tt><tt class="descname">PaymentReleaseError</tt><a class="headerlink" href="#poundpay.payments.PaymentReleaseError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thrown when an error occurs while attempting to RELEASE a payment</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="poundpay.payments.PaymentCancelError">
+<em class="property">class </em><tt class="descclassname">poundpay.payments.</tt><tt class="descname">PaymentCancelError</tt><a class="headerlink" href="#poundpay.payments.PaymentCancelError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thrown when an error occurs while attempting to CANCEL a payment</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">API - PoundPay Client Library</a><ul>
+<li><a class="reference internal" href="#payment-exceptions">Payment Exceptions</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">PoundPay Python Client</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/api.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="index.html" title="PoundPay Python Client"
+             >previous</a> |</li>
+        <li><a href="index.html">PoundPay Python Client v0.0.7 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Mahmoud Abdelkader.
+    </div>
+  </body>
+</html>
