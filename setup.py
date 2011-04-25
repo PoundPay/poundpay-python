@@ -2,6 +2,7 @@
 PoundPay Python client library.
 
 See ``readme.rst`` for usage advice.
+
 """
 
 try:
@@ -10,15 +11,19 @@ except ImportError:
     from distutils.core import setup
 
 
+with open('README.rst') as f:
+    long_description = f.read()
+
+
 setup(
     name='Poundpay',
-    version='0.0.8',
+    version='0.0.9',
     url='https://dev.poundpay.com/',
     license='BSD',
     author='Matin Tamizi, Mahmoud Abdelkader',
     author_email='devsupport@poundpay.com',
     description='Payments platform for marketplaces',
-    long_description=open('readme.rst').read(),
+    long_description=long_description,
     packages=['poundpay'],
     install_requires=[
         'simplejson',
