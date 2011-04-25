@@ -1,13 +1,17 @@
 from .resource import Resource
 
+
 class PaymentError(Exception):
     pass
+
 
 class PaymentEscrowError(PaymentError):
     pass
 
+
 class PaymentReleaseError(PaymentError):
     pass
+
 
 class PaymentCancelError(PaymentError):
     pass
@@ -15,13 +19,13 @@ class PaymentCancelError(PaymentError):
 
 class Payment(Resource):
     _name = 'payments'
-    
+
     def escrow(self):
         if self.status != 'AUTHORIZED':
             raise PaymentEscrowError(
                 "Payment status is %s.  " % self.status +
                 "Only AUTHORIZED payments may be released")
-        
+
         self.status = 'ESCROWED'
         self.save()
 

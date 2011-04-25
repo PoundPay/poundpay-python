@@ -42,7 +42,7 @@ Creating a Payment
 ::
 
     payment = poundpay.Payment(
-        amount=20000,
+        amount=10000,
         payer_fee_amount=0,
         payer_email_address='fred@example.com',
         recipient_fee_amount=500,
@@ -73,7 +73,6 @@ Serving IFRAME
         success: handlePaymentSuccess,
         error: handlePaymentError,
         cardholder_name: "Fred Nietzsche", // Optional
-        phone_number: "4085551234", // Optional
         server: "https://www-sandbox.poundpay.com"  // Exclude for production
       });
     </script>
@@ -84,8 +83,8 @@ Payment methods
 
 ::
 
-    list_of_payments = Poundpay.Payment.all()
-    payment = Poundpay.Payment.find(payment_sid)
+    list_of_payments = poundpay.Payment.all()
+    payment = poundpay.Payment.find(payment_sid)
     payment.escrow()   # AUTHORIZED -> ESCROWED.  Credit card is charged
     payment.release()  # ESCROWED   -> RELEASED.  Recipient receives money
     payment.cancel()   # ESCROWED   -> CANCELED.  Payer receives refund
