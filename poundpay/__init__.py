@@ -1,10 +1,10 @@
-from .client import Client
+from .client import Client, ClientResponse
 from .developers import Developer
 from .resource import Resource
 from .payments import Payment
 
 
-__all__ = ['Client', 'Developer', 'Resource', 'Payment']
+__all__ = ['Client', 'ClientResponse', 'Developer', 'Resource', 'Payment']
 
 
 def configure(developer_sid, auth_token, api_url=None, api_version=None):
@@ -23,8 +23,7 @@ def configure(developer_sid, auth_token, api_url=None, api_version=None):
        poundpay.configure('YOUR_DEVELOPER_SID', 'YOUR_AUTH_TOKEN')
 
        developer = poundpay.Developer.find_me()
-       assert developer.sid, 'YOUR_DEVELOPER_SID'
-
+       assert developer.sid == 'YOUR_DEVELOPER_SID'
 
     """
     Resource.client = Client(developer_sid, auth_token, api_url, api_version)
