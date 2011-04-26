@@ -3,10 +3,24 @@ import unittest
 
 import mock
 
-from poundpay.client import Client
+from poundpay.client import Client, ClientResponse
 
 
-class ClientTest(unittest.TestCase):
+class TestClientResponse(unittest.TestCase):
+
+    def test_client_response_constructor_arguments(self):
+        sentinal_1 = object()
+        sentinal_2 = object()
+        client_response = ClientResponse(sentinal_1, sentinal_2)
+        self.assertIs(client_response.response, sentinal_1)
+        self.assertIs(client_response.data, sentinal_2)
+
+    def test_client_json_property(self):
+        client_response = ClientResponse(None, json.dumps({'foo': 'bar'}))
+        self.assertEqual(client_response.json, {'foo': 'bar'})
+
+
+class TestClient(unittest.TestCase):
 
     @property
     def production_config(self):
