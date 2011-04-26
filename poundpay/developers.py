@@ -15,11 +15,11 @@ class Developer(Resource):
         ::
 
            developer = poundpay.Developer.find_me()
-           assert developer.sid, 'YOUR_DEVELOPER_SID'
+           assert developer.sid == 'YOUR_DEVELOPER_SID'
            developer.callback_url = 'http://marketplace.com/callback/'
            developer.save()
            developer = poundpay.Developer.find_me()
-           assert developer.callback_url, 'http://marketplace.com/callback/'
+           assert developer.callback_url == 'http://marketplace.com/callback/'
 
         """
         return cls.find(cls.client.developer_sid)

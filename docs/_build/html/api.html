@@ -46,20 +46,454 @@
   <div class="section" id="module-poundpay">
 <span id="api-poundpay-client-library"></span><span id="api"></span><h1>API - PoundPay Client Library<a class="headerlink" href="#module-poundpay" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
+<dt id="poundpay.Client">
+<em class="property">class </em><tt class="descclassname">poundpay.</tt><tt class="descname">Client</tt><big>(</big><em>developer_sid</em>, <em>auth_token</em>, <em>api_url='https://api.poundpay.com'</em>, <em>api_version='silver'</em>, <em>opener_handlers=None</em><big>)</big><a class="headerlink" href="#poundpay.Client" title="Permalink to this definition">¶</a></dt>
+<dd><p>Client is a thread-local object that is instantiated as a class
+variable of <a class="reference internal" href="#poundpay.Resource" title="poundpay.Resource"><tt class="xref py py-class docutils literal"><span class="pre">Resource</span></tt></a>, particularly when
+<a class="reference internal" href="#poundpay.configure" title="poundpay.configure"><tt class="xref py py-func docutils literal"><span class="pre">configure()</span></tt></a> is used.</p>
+<p>Instantiating <a class="reference internal" href="#poundpay.Client" title="poundpay.Client"><tt class="xref py py-class docutils literal"><span class="pre">Client</span></tt></a> is as simple as
+passing in your developer&#8217;s <tt class="docutils literal"><span class="pre">developer_sid</span></tt> and
+<tt class="docutils literal"><span class="pre">auth_token</span></tt>.</p>
+<p>The <tt class="docutils literal"><span class="pre">opener_handlers</span></tt> parameter should be an iterable to allow
+for custom handlers to pass into <a class="reference external" href="http://docs.python.org/library/urllib2.html#urllib2.build_opener">urllib2.build_opener()</a>.</p>
+<dl class="method">
+<dt id="poundpay.Client.delete">
+<tt class="descname">delete</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#poundpay.Client.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Issue a <tt class="docutils literal"><span class="pre">DELETE</span> <span class="pre">/path/resource-sid</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> &#8211; The resource location + the resource&#8217;s sid</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">A <a class="reference internal" href="#poundpay.ClientResponse" title="poundpay.ClientResponse"><tt class="xref py py-class docutils literal"><span class="pre">ClientResponse</span></tt></a>.</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="s">&#39;YOUR_DEVELOPER_SID&#39;</span><span class="p">,</span> <span class="s">&#39;YOUR_AUTH_TOKEN&#39;</span><span class="p">)</span>
+<span class="n">client_response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="s">&#39;/silver/payments/PY...&#39;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">client_response</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">getcode</span><span class="p">()</span> <span class="o">==</span> <span class="mi">204</span>
+<span class="k">assert</span> <span class="n">client_response</span><span class="o">.</span><span class="n">json</span> <span class="o">==</span> <span class="p">{}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="poundpay.Client.get">
+<tt class="descname">get</tt><big>(</big><em>path</em>, <em>**params</em><big>)</big><a class="headerlink" href="#poundpay.Client.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Issue a <tt class="docutils literal"><span class="pre">GET</span> <span class="pre">/path/</span></tt>. If the <tt class="docutils literal"><span class="pre">/path/</span></tt> has a resource-sid
+associated with it, this will return the representation of the
+resource located at <tt class="docutils literal"><span class="pre">/path/</span></tt> that has that associated resource-sid.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>path</strong> &#8211; The resource location</li>
+<li><strong>params</strong> &#8211; Optional parameters to <a class="reference external" href="http://docs.python.org/library/urllib.html#urllib.urlencode">urllib.urlencode</a> and append to
+<tt class="docutils literal"><span class="pre">path</span></tt> prefixed with a &#8216;?&#8217;.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">A <a class="reference internal" href="#poundpay.ClientResponse" title="poundpay.ClientResponse"><tt class="xref py py-class docutils literal"><span class="pre">ClientResponse</span></tt></a>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># issue an index on all our payments</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="s">&#39;YOUR_DEVELOPER_SID&#39;</span><span class="p">,</span> <span class="s">&#39;YOUR_AUTH_TOKEN&#39;</span><span class="p">)</span>
+<span class="n">client_response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;/silver/payments/&#39;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">client_response</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">getcode</span><span class="p">()</span> <span class="o">==</span> <span class="mi">200</span>
+<span class="c"># gives us back a paginated response</span>
+<span class="n">payload</span> <span class="o">=</span> <span class="n">client_response</span><span class="o">.</span><span class="n">json</span>
+<span class="k">assert</span> <span class="s">&#39;num_pages&#39;</span> <span class="ow">in</span> <span class="n">payload</span>
+<span class="k">assert</span> <span class="s">&#39;page_size&#39;</span> <span class="ow">in</span> <span class="n">payload</span>
+<span class="k">assert</span> <span class="s">&#39;payments&#39;</span> <span class="ow">in</span> <span class="n">payload</span>   <span class="c"># will be the resource name</span>
+
+<span class="c"># show a resource with resource-sid PY...</span>
+<span class="n">client_response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;/silver/payments/PY...&#39;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">client_response</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">getcode</span><span class="p">()</span> <span class="o">==</span> <span class="mi">200</span>
+<span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">client_response</span><span class="o">.</span><span class="n">json</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">client_response</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s">&#39;sid&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;PY...&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="poundpay.Client.post">
+<tt class="descname">post</tt><big>(</big><em>path</em>, <em>params</em><big>)</big><a class="headerlink" href="#poundpay.Client.post" title="Permalink to this definition">¶</a></dt>
+<dd><p>Issue a <tt class="docutils literal"><span class="pre">POST</span> <span class="pre">/path/</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>path</strong> &#8211; The resource location</li>
+<li><strong>params</strong> &#8211; The parameters to create the resource with.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">A <a class="reference internal" href="#poundpay.ClientResponse" title="poundpay.ClientResponse"><tt class="xref py py-class docutils literal"><span class="pre">ClientResponse</span></tt></a>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="s">&#39;YOUR_DEVELOPER_SID&#39;</span><span class="p">,</span> <span class="s">&#39;YOUR_AUTH_TOKEN&#39;</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+   <span class="s">&#39;amount&#39;</span><span class="p">:</span> <span class="mi">4000</span><span class="p">,</span>
+   <span class="s">&#39;payer_email_address&#39;</span><span class="p">:</span> <span class="s">&#39;x@y.org&#39;</span><span class="p">,</span>
+   <span class="s">&#39;recipient_email_address&#39;</span><span class="p">:</span> <span class="s">&#39;bl@x.com&#39;</span><span class="p">,</span>
+   <span class="s">&#39;payer_fee_amount&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+   <span class="s">&#39;recipient_fee_amount&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">client_response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s">&#39;/silver/payments&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">client_response</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">getcode</span><span class="p">()</span> <span class="o">==</span> <span class="mi">201</span>
+<span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">client_response</span><span class="o">.</span><span class="n">json</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="n">client_response</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">==</span> <span class="n">value</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="poundpay.Client.put">
+<tt class="descname">put</tt><big>(</big><em>path</em>, <em>params</em><big>)</big><a class="headerlink" href="#poundpay.Client.put" title="Permalink to this definition">¶</a></dt>
+<dd><p>Issue a <tt class="docutils literal"><span class="pre">PUT</span> <span class="pre">/path/resource-sid</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>path</strong> &#8211; The resource location + the resource&#8217;s sid</li>
+<li><strong>params</strong> &#8211; The parameters to update the resource with.</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">A <a class="reference internal" href="#poundpay.ClientResponse" title="poundpay.ClientResponse"><tt class="xref py py-class docutils literal"><span class="pre">ClientResponse</span></tt></a>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="s">&#39;YOUR_DEVELOPER_SID&#39;</span><span class="p">,</span> <span class="s">&#39;YOUR_AUTH_TOKEN&#39;</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;status&#39;</span><span class="p">:</span> <span class="s">&#39;CANCELED&#39;</span><span class="p">}</span>
+<span class="n">client_response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s">&#39;/silver/payments/PY...&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">client_response</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">getcode</span><span class="p">()</span> <span class="o">==</span> <span class="mi">201</span>
+<span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">client_response</span><span class="o">.</span><span class="n">json</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">client_response</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s">&#39;status&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;CANCELED&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="poundpay.ClientResponse">
+<em class="property">class </em><tt class="descclassname">poundpay.</tt><tt class="descname">ClientResponse</tt><big>(</big><em>file_like_object</em>, <em>data</em><big>)</big><a class="headerlink" href="#poundpay.ClientResponse" title="Permalink to this definition">¶</a></dt>
+<dd><p>The response returned from any <a class="reference internal" href="#poundpay.Client" title="poundpay.Client"><tt class="xref py py-class docutils literal"><span class="pre">Client</span></tt></a> HTTP method.
+<a class="reference internal" href="#poundpay.ClientResponse" title="poundpay.ClientResponse"><tt class="xref py py-class docutils literal"><span class="pre">ClientResponse</span></tt></a> has a <tt class="docutils literal"><span class="pre">response</span></tt> instance variable,
+representing the file-like object returned by <a class="reference external" href="http://docs.python.org/library/urllib2.html#urllib2.urlopen">urllib2.urlopen</a> and a <tt class="docutils literal"><span class="pre">data</span></tt>
+instance variable, representing the raw data <tt class="docutils literal"><span class="pre">read()</span></tt> from the
+<tt class="docutils literal"><span class="pre">response</span></tt>.</p>
+<p>Sample usage:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">response</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="s">&#39;http://google.com&#39;</span><span class="p">)</span>
+<span class="n">client_response</span> <span class="o">=</span> <span class="n">ClientResponse</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+
+<span class="c"># access the internal response object for its API</span>
+<span class="k">assert</span> <span class="n">client_response</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">getcode</span><span class="p">()</span> <span class="o">==</span> <span class="mi">200</span>
+<span class="k">assert</span> <span class="n">client_response</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">geturl</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#39;http://google.com&#39;</span>
+
+<span class="c"># access the internal data object for the read contents.</span>
+<span class="k">assert</span> <span class="s">&#39;html&#39;</span> <span class="ow">in</span> <span class="n">client_response</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="poundpay.ClientResponse.json">
+<tt class="descname">json</tt><a class="headerlink" href="#poundpay.ClientResponse.json" title="Permalink to this definition">¶</a></dt>
+<dd><p>A property which decodes a JSON payload.
+Equivalent to:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="poundpay.Developer">
 <em class="property">class </em><tt class="descclassname">poundpay.</tt><tt class="descname">Developer</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#poundpay.Developer" title="Permalink to this definition">¶</a></dt>
 <dd><p>The Developer resource, represented by a RESTful resource located at
 <tt class="docutils literal"><span class="pre">/developers</span></tt>.</p>
 <dl class="classmethod">
+<dt id="poundpay.Developer.all">
+<em class="property">classmethod </em><tt class="descname">all</tt><big>(</big><em>**params</em><big>)</big><a class="headerlink" href="#poundpay.Developer.all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents an index of a resource by issuing a <tt class="docutils literal"><span class="pre">GET</span> <span class="pre">/resource/</span></tt></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>params</strong> &#8211; <p>Optional parameters to <a class="reference external" href="http://docs.python.org/library/urllib.html#urllib.urlencode">urllib.urlencode</a> and append to
+<tt class="docutils literal"><span class="pre">/resource/</span></tt> prefixed with a &#8216;?&#8217;.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">A list of <a class="reference internal" href="#poundpay.Resource" title="poundpay.Resource"><tt class="xref py py-class docutils literal"><span class="pre">Resource</span></tt></a> descendants,
+represented by <tt class="docutils literal"><span class="pre">cls</span></tt>.</td>
+</tr>
+</tbody>
+</table>
+<p>Sample Usage:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">poundpay</span>
+<span class="n">poundpay</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s">&#39;DEVELOPER_SID&#39;</span><span class="p">,</span> <span class="s">&#39;AUTH_TOKEN&#39;</span><span class="p">)</span>
+
+<span class="c"># paginated fetch of all associated payments</span>
+<span class="c"># equivalent of GET /silver/payments/</span>
+<span class="n">poundpay</span><span class="o">.</span><span class="n">Payment</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+<span class="c"># fetch by offset and give me 5 results</span>
+<span class="c"># equivalent of GET /silver/payments/?offset=10&amp;limit=5</span>
+<span class="n">poundpay</span><span class="o">.</span><span class="n">Payment</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="poundpay.Developer.delete">
+<tt class="descname">delete</tt><big>(</big><big>)</big><a class="headerlink" href="#poundpay.Developer.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Issues a <tt class="docutils literal"><span class="pre">DELETE</span></tt> on a resource.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+<p>Sample Usage:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">poundpay</span>
+<span class="n">poundpay</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s">&#39;DEVELOPER_SID&#39;</span><span class="p">,</span> <span class="s">&#39;AUTH_TOKEN&#39;</span><span class="p">)</span>
+<span class="n">payment</span> <span class="o">=</span> <span class="n">poundpay</span><span class="o">.</span><span class="n">Payment</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;PY...&#39;</span><span class="p">)</span>
+<span class="n">payment</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>   <span class="c"># issues a DELETE /silver/payment/PY...</span>
+<span class="n">payment</span> <span class="o">=</span> <span class="n">poundpay</span><span class="o">.</span><span class="n">Payment</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;PY...&#39;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">payment</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">getcode</span><span class="p">()</span> <span class="o">==</span> <span class="mi">204</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="poundpay.Developer.find">
+<em class="property">classmethod </em><tt class="descname">find</tt><big>(</big><em>sid</em>, <em>**params</em><big>)</big><a class="headerlink" href="#poundpay.Developer.find" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents an show of a resource by issuing a
+<tt class="docutils literal"><span class="pre">GET</span> <span class="pre">/resource/sid</span></tt></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sid</strong> &#8211; Represents the identifier of a resource</li>
+<li><strong>params</strong> &#8211; <p>Optional parameters to <a class="reference external" href="http://docs.python.org/library/urllib.html#urllib.urlencode">urllib.urlencode</a> and append to
+<tt class="docutils literal"><span class="pre">/resource/sid</span></tt> prefixed with a &#8216;?&#8217;.</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">A <a class="reference internal" href="#poundpay.Resource" title="poundpay.Resource"><tt class="xref py py-class docutils literal"><span class="pre">Resource</span></tt></a> descendant, represented
+by <tt class="docutils literal"><span class="pre">cls</span></tt>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Sample Usage:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">poundpay</span>
+<span class="n">poundpay</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s">&#39;DEVELOPER_SID&#39;</span><span class="p">,</span> <span class="s">&#39;AUTH_TOKEN&#39;</span><span class="p">)</span>
+
+<span class="c"># paginated fetch of all associated payments</span>
+<span class="c"># equivalent of GET /silver/payments/PY...</span>
+<span class="n">poundpay</span><span class="o">.</span><span class="n">Payment</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;PY...&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="classmethod">
 <dt id="poundpay.Developer.find_me">
 <em class="property">classmethod </em><tt class="descname">find_me</tt><big>(</big><big>)</big><a class="headerlink" href="#poundpay.Developer.find_me" title="Permalink to this definition">¶</a></dt>
 <dd><p>Issue a <tt class="docutils literal"><span class="pre">GET</span> <span class="pre">/developers/&lt;developer_sid&gt;</span></tt></p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">developer</span> <span class="o">=</span> <span class="n">poundpay</span><span class="o">.</span><span class="n">Developer</span><span class="o">.</span><span class="n">find_me</span><span class="p">()</span>
-<span class="k">assert</span> <span class="n">developer</span><span class="o">.</span><span class="n">sid</span><span class="p">,</span> <span class="s">&#39;YOUR_DEVELOPER_SID&#39;</span>
+<span class="k">assert</span> <span class="n">developer</span><span class="o">.</span><span class="n">sid</span> <span class="o">==</span> <span class="s">&#39;YOUR_DEVELOPER_SID&#39;</span>
 <span class="n">developer</span><span class="o">.</span><span class="n">callback_url</span> <span class="o">=</span> <span class="s">&#39;http://marketplace.com/callback/&#39;</span>
 <span class="n">developer</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
 <span class="n">developer</span> <span class="o">=</span> <span class="n">poundpay</span><span class="o">.</span><span class="n">Developer</span><span class="o">.</span><span class="n">find_me</span><span class="p">()</span>
-<span class="k">assert</span> <span class="n">developer</span><span class="o">.</span><span class="n">callback_url</span><span class="p">,</span> <span class="s">&#39;http://marketplace.com/callback/&#39;</span>
+<span class="k">assert</span> <span class="n">developer</span><span class="o">.</span><span class="n">callback_url</span> <span class="o">==</span> <span class="s">&#39;http://marketplace.com/callback/&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="poundpay.Developer.save">
+<tt class="descname">save</tt><big>(</big><big>)</big><a class="headerlink" href="#poundpay.Developer.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Issues either a <tt class="docutils literal"><span class="pre">POST</span></tt> or a <tt class="docutils literal"><span class="pre">PUT</span></tt> on a resource depending
+if has a <tt class="docutils literal"><span class="pre">sid</span></tt> or an <tt class="docutils literal"><span class="pre">id</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">A <a class="reference internal" href="#poundpay.Resource" title="poundpay.Resource"><tt class="xref py py-class docutils literal"><span class="pre">Resource</span></tt></a> descendant, represented
+by <tt class="docutils literal"><span class="pre">cls</span></tt>.</td>
+</tr>
+</tbody>
+</table>
+<p>Sample Usage:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">poundpay</span>
+<span class="n">poundpay</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s">&#39;DEVELOPER_SID&#39;</span><span class="p">,</span> <span class="s">&#39;AUTH_TOKEN&#39;</span><span class="p">)</span>
+
+<span class="c"># paginated fetch of all associated payments</span>
+<span class="c"># equivalent of GET /silver/payments/</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+   <span class="s">&#39;amount&#39;</span><span class="p">:</span> <span class="mi">4000</span><span class="p">,</span>
+   <span class="s">&#39;payer_email_address&#39;</span><span class="p">:</span> <span class="s">&#39;x@y.org&#39;</span><span class="p">,</span>
+   <span class="s">&#39;recipient_email_address&#39;</span><span class="p">:</span> <span class="s">&#39;bl@x.com&#39;</span><span class="p">,</span>
+   <span class="s">&#39;payer_fee_amount&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+   <span class="s">&#39;recipient_fee_amount&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">payment</span> <span class="o">=</span> <span class="n">poundpay</span><span class="o">.</span><span class="n">Payment</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+<span class="n">payment</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>   <span class="c"># issues POST /silver/payments</span>
+<span class="k">assert</span> <span class="n">payment</span><span class="o">.</span><span class="n">sid</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;PY&#39;</span><span class="p">)</span>
+<span class="n">payment</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s">&#39;CANCELED&#39;</span>
+<span class="c"># because payment already has a sid</span>
+<span class="n">payment</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>   <span class="c"># issues PUT /silver/payments</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="poundpay.Resource">
+<em class="property">class </em><tt class="descclassname">poundpay.</tt><tt class="descname">Resource</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#poundpay.Resource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that represents a RESTful resource at a particular endpoint.
+Has a class variable, <a class="reference internal" href="#poundpay.Client" title="poundpay.Client"><tt class="xref py py-class docutils literal"><span class="pre">Client</span></tt></a>, that is defaulted to
+<tt class="xref docutils literal"><span class="pre">None</span></tt>. Once configured, there are standard operators that are
+enabled on any resource.</p>
+<dl class="classmethod">
+<dt id="poundpay.Resource.all">
+<em class="property">classmethod </em><tt class="descname">all</tt><big>(</big><em>**params</em><big>)</big><a class="headerlink" href="#poundpay.Resource.all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents an index of a resource by issuing a <tt class="docutils literal"><span class="pre">GET</span> <span class="pre">/resource/</span></tt></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>params</strong> &#8211; <p>Optional parameters to <a class="reference external" href="http://docs.python.org/library/urllib.html#urllib.urlencode">urllib.urlencode</a> and append to
+<tt class="docutils literal"><span class="pre">/resource/</span></tt> prefixed with a &#8216;?&#8217;.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">A list of <a class="reference internal" href="#poundpay.Resource" title="poundpay.Resource"><tt class="xref py py-class docutils literal"><span class="pre">Resource</span></tt></a> descendants,
+represented by <tt class="docutils literal"><span class="pre">cls</span></tt>.</td>
+</tr>
+</tbody>
+</table>
+<p>Sample Usage:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">poundpay</span>
+<span class="n">poundpay</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s">&#39;DEVELOPER_SID&#39;</span><span class="p">,</span> <span class="s">&#39;AUTH_TOKEN&#39;</span><span class="p">)</span>
+
+<span class="c"># paginated fetch of all associated payments</span>
+<span class="c"># equivalent of GET /silver/payments/</span>
+<span class="n">poundpay</span><span class="o">.</span><span class="n">Payment</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+<span class="c"># fetch by offset and give me 5 results</span>
+<span class="c"># equivalent of GET /silver/payments/?offset=10&amp;limit=5</span>
+<span class="n">poundpay</span><span class="o">.</span><span class="n">Payment</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="poundpay.Resource.delete">
+<tt class="descname">delete</tt><big>(</big><big>)</big><a class="headerlink" href="#poundpay.Resource.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Issues a <tt class="docutils literal"><span class="pre">DELETE</span></tt> on a resource.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+<p>Sample Usage:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">poundpay</span>
+<span class="n">poundpay</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s">&#39;DEVELOPER_SID&#39;</span><span class="p">,</span> <span class="s">&#39;AUTH_TOKEN&#39;</span><span class="p">)</span>
+<span class="n">payment</span> <span class="o">=</span> <span class="n">poundpay</span><span class="o">.</span><span class="n">Payment</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;PY...&#39;</span><span class="p">)</span>
+<span class="n">payment</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>   <span class="c"># issues a DELETE /silver/payment/PY...</span>
+<span class="n">payment</span> <span class="o">=</span> <span class="n">poundpay</span><span class="o">.</span><span class="n">Payment</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;PY...&#39;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">payment</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">getcode</span><span class="p">()</span> <span class="o">==</span> <span class="mi">204</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="poundpay.Resource.find">
+<em class="property">classmethod </em><tt class="descname">find</tt><big>(</big><em>sid</em>, <em>**params</em><big>)</big><a class="headerlink" href="#poundpay.Resource.find" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents an show of a resource by issuing a
+<tt class="docutils literal"><span class="pre">GET</span> <span class="pre">/resource/sid</span></tt></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sid</strong> &#8211; Represents the identifier of a resource</li>
+<li><strong>params</strong> &#8211; <p>Optional parameters to <a class="reference external" href="http://docs.python.org/library/urllib.html#urllib.urlencode">urllib.urlencode</a> and append to
+<tt class="docutils literal"><span class="pre">/resource/sid</span></tt> prefixed with a &#8216;?&#8217;.</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">A <a class="reference internal" href="#poundpay.Resource" title="poundpay.Resource"><tt class="xref py py-class docutils literal"><span class="pre">Resource</span></tt></a> descendant, represented
+by <tt class="docutils literal"><span class="pre">cls</span></tt>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Sample Usage:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">poundpay</span>
+<span class="n">poundpay</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s">&#39;DEVELOPER_SID&#39;</span><span class="p">,</span> <span class="s">&#39;AUTH_TOKEN&#39;</span><span class="p">)</span>
+
+<span class="c"># paginated fetch of all associated payments</span>
+<span class="c"># equivalent of GET /silver/payments/PY...</span>
+<span class="n">poundpay</span><span class="o">.</span><span class="n">Payment</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;PY...&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="poundpay.Resource.save">
+<tt class="descname">save</tt><big>(</big><big>)</big><a class="headerlink" href="#poundpay.Resource.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Issues either a <tt class="docutils literal"><span class="pre">POST</span></tt> or a <tt class="docutils literal"><span class="pre">PUT</span></tt> on a resource depending
+if has a <tt class="docutils literal"><span class="pre">sid</span></tt> or an <tt class="docutils literal"><span class="pre">id</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">A <a class="reference internal" href="#poundpay.Resource" title="poundpay.Resource"><tt class="xref py py-class docutils literal"><span class="pre">Resource</span></tt></a> descendant, represented
+by <tt class="docutils literal"><span class="pre">cls</span></tt>.</td>
+</tr>
+</tbody>
+</table>
+<p>Sample Usage:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">poundpay</span>
+<span class="n">poundpay</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s">&#39;DEVELOPER_SID&#39;</span><span class="p">,</span> <span class="s">&#39;AUTH_TOKEN&#39;</span><span class="p">)</span>
+
+<span class="c"># paginated fetch of all associated payments</span>
+<span class="c"># equivalent of GET /silver/payments/</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+   <span class="s">&#39;amount&#39;</span><span class="p">:</span> <span class="mi">4000</span><span class="p">,</span>
+   <span class="s">&#39;payer_email_address&#39;</span><span class="p">:</span> <span class="s">&#39;x@y.org&#39;</span><span class="p">,</span>
+   <span class="s">&#39;recipient_email_address&#39;</span><span class="p">:</span> <span class="s">&#39;bl@x.com&#39;</span><span class="p">,</span>
+   <span class="s">&#39;payer_fee_amount&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+   <span class="s">&#39;recipient_fee_amount&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">payment</span> <span class="o">=</span> <span class="n">poundpay</span><span class="o">.</span><span class="n">Payment</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+<span class="n">payment</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>   <span class="c"># issues POST /silver/payments</span>
+<span class="k">assert</span> <span class="n">payment</span><span class="o">.</span><span class="n">sid</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;PY&#39;</span><span class="p">)</span>
+<span class="n">payment</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s">&#39;CANCELED&#39;</span>
+<span class="c"># because payment already has a sid</span>
+<span class="n">payment</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>   <span class="c"># issues PUT /silver/payments</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -71,6 +505,38 @@
 <em class="property">class </em><tt class="descclassname">poundpay.</tt><tt class="descname">Payment</tt><big>(</big><em>**kwargs</em><big>)</big><a class="headerlink" href="#poundpay.Payment" title="Permalink to this definition">¶</a></dt>
 <dd><p>The Payment resource, represented by a RESTful resource located at
 <tt class="docutils literal"><span class="pre">/payments</span></tt>.</p>
+<dl class="classmethod">
+<dt id="poundpay.Payment.all">
+<em class="property">classmethod </em><tt class="descname">all</tt><big>(</big><em>**params</em><big>)</big><a class="headerlink" href="#poundpay.Payment.all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents an index of a resource by issuing a <tt class="docutils literal"><span class="pre">GET</span> <span class="pre">/resource/</span></tt></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>params</strong> &#8211; <p>Optional parameters to <a class="reference external" href="http://docs.python.org/library/urllib.html#urllib.urlencode">urllib.urlencode</a> and append to
+<tt class="docutils literal"><span class="pre">/resource/</span></tt> prefixed with a &#8216;?&#8217;.</p>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">A list of <a class="reference internal" href="#poundpay.Resource" title="poundpay.Resource"><tt class="xref py py-class docutils literal"><span class="pre">Resource</span></tt></a> descendants,
+represented by <tt class="docutils literal"><span class="pre">cls</span></tt>.</td>
+</tr>
+</tbody>
+</table>
+<p>Sample Usage:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">poundpay</span>
+<span class="n">poundpay</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s">&#39;DEVELOPER_SID&#39;</span><span class="p">,</span> <span class="s">&#39;AUTH_TOKEN&#39;</span><span class="p">)</span>
+
+<span class="c"># paginated fetch of all associated payments</span>
+<span class="c"># equivalent of GET /silver/payments/</span>
+<span class="n">poundpay</span><span class="o">.</span><span class="n">Payment</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+<span class="c"># fetch by offset and give me 5 results</span>
+<span class="c"># equivalent of GET /silver/payments/?offset=10&amp;limit=5</span>
+<span class="n">poundpay</span><span class="o">.</span><span class="n">Payment</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <dl class="method">
 <dt id="poundpay.Payment.cancel">
 <tt class="descname">cancel</tt><big>(</big><big>)</big><a class="headerlink" href="#poundpay.Payment.cancel" title="Permalink to this definition">¶</a></dt>
@@ -80,6 +546,29 @@ PoundPay fees are refunded back to the developer, as well.</p>
 <p class="first admonition-title">Note</p>
 <p class="last">a <a class="reference internal" href="#poundpay.payments.PaymentCancelError" title="poundpay.payments.PaymentCancelError"><tt class="xref py py-exc docutils literal"><span class="pre">PaymentCancelError</span></tt></a> is thrown
 if the Payment&#8217;s status is not <tt class="docutils literal"><span class="pre">ESCROWED</span></tt></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="poundpay.Payment.delete">
+<tt class="descname">delete</tt><big>(</big><big>)</big><a class="headerlink" href="#poundpay.Payment.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Issues a <tt class="docutils literal"><span class="pre">DELETE</span></tt> on a resource.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+<p>Sample Usage:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">poundpay</span>
+<span class="n">poundpay</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s">&#39;DEVELOPER_SID&#39;</span><span class="p">,</span> <span class="s">&#39;AUTH_TOKEN&#39;</span><span class="p">)</span>
+<span class="n">payment</span> <span class="o">=</span> <span class="n">poundpay</span><span class="o">.</span><span class="n">Payment</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;PY...&#39;</span><span class="p">)</span>
+<span class="n">payment</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>   <span class="c"># issues a DELETE /silver/payment/PY...</span>
+<span class="n">payment</span> <span class="o">=</span> <span class="n">poundpay</span><span class="o">.</span><span class="n">Payment</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;PY...&#39;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">payment</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">getcode</span><span class="p">()</span> <span class="o">==</span> <span class="mi">204</span>
+</pre></div>
 </div>
 </dd></dl>
 
@@ -95,6 +584,40 @@ Payment&#8217;s status is not <tt class="docutils literal"><span class="pre">AUT
 </div>
 </dd></dl>
 
+<dl class="classmethod">
+<dt id="poundpay.Payment.find">
+<em class="property">classmethod </em><tt class="descname">find</tt><big>(</big><em>sid</em>, <em>**params</em><big>)</big><a class="headerlink" href="#poundpay.Payment.find" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents an show of a resource by issuing a
+<tt class="docutils literal"><span class="pre">GET</span> <span class="pre">/resource/sid</span></tt></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sid</strong> &#8211; Represents the identifier of a resource</li>
+<li><strong>params</strong> &#8211; <p>Optional parameters to <a class="reference external" href="http://docs.python.org/library/urllib.html#urllib.urlencode">urllib.urlencode</a> and append to
+<tt class="docutils literal"><span class="pre">/resource/sid</span></tt> prefixed with a &#8216;?&#8217;.</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">A <a class="reference internal" href="#poundpay.Resource" title="poundpay.Resource"><tt class="xref py py-class docutils literal"><span class="pre">Resource</span></tt></a> descendant, represented
+by <tt class="docutils literal"><span class="pre">cls</span></tt>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Sample Usage:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">poundpay</span>
+<span class="n">poundpay</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s">&#39;DEVELOPER_SID&#39;</span><span class="p">,</span> <span class="s">&#39;AUTH_TOKEN&#39;</span><span class="p">)</span>
+
+<span class="c"># paginated fetch of all associated payments</span>
+<span class="c"># equivalent of GET /silver/payments/PY...</span>
+<span class="n">poundpay</span><span class="o">.</span><span class="n">Payment</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;PY...&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <dl class="method">
 <dt id="poundpay.Payment.release">
 <tt class="descname">release</tt><big>(</big><big>)</big><a class="headerlink" href="#poundpay.Payment.release" title="Permalink to this definition">¶</a></dt>
@@ -104,6 +627,43 @@ a PoundPay account.</p>
 <p class="first admonition-title">Note</p>
 <p class="last">a <a class="reference internal" href="#poundpay.payments.PaymentReleaseError" title="poundpay.payments.PaymentReleaseError"><tt class="xref py py-exc docutils literal"><span class="pre">PaymentReleaseError</span></tt></a> is thrown
 if the Payment&#8217;s status is not <tt class="docutils literal"><span class="pre">ESCROWED</span></tt></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="poundpay.Payment.save">
+<tt class="descname">save</tt><big>(</big><big>)</big><a class="headerlink" href="#poundpay.Payment.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Issues either a <tt class="docutils literal"><span class="pre">POST</span></tt> or a <tt class="docutils literal"><span class="pre">PUT</span></tt> on a resource depending
+if has a <tt class="docutils literal"><span class="pre">sid</span></tt> or an <tt class="docutils literal"><span class="pre">id</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Return type:</th><td class="field-body">A <a class="reference internal" href="#poundpay.Resource" title="poundpay.Resource"><tt class="xref py py-class docutils literal"><span class="pre">Resource</span></tt></a> descendant, represented
+by <tt class="docutils literal"><span class="pre">cls</span></tt>.</td>
+</tr>
+</tbody>
+</table>
+<p>Sample Usage:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">poundpay</span>
+<span class="n">poundpay</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s">&#39;DEVELOPER_SID&#39;</span><span class="p">,</span> <span class="s">&#39;AUTH_TOKEN&#39;</span><span class="p">)</span>
+
+<span class="c"># paginated fetch of all associated payments</span>
+<span class="c"># equivalent of GET /silver/payments/</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+   <span class="s">&#39;amount&#39;</span><span class="p">:</span> <span class="mi">4000</span><span class="p">,</span>
+   <span class="s">&#39;payer_email_address&#39;</span><span class="p">:</span> <span class="s">&#39;x@y.org&#39;</span><span class="p">,</span>
+   <span class="s">&#39;recipient_email_address&#39;</span><span class="p">:</span> <span class="s">&#39;bl@x.com&#39;</span><span class="p">,</span>
+   <span class="s">&#39;payer_fee_amount&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+   <span class="s">&#39;recipient_fee_amount&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">payment</span> <span class="o">=</span> <span class="n">poundpay</span><span class="o">.</span><span class="n">Payment</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+<span class="n">payment</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>   <span class="c"># issues POST /silver/payments</span>
+<span class="k">assert</span> <span class="n">payment</span><span class="o">.</span><span class="n">sid</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;PY&#39;</span><span class="p">)</span>
+<span class="n">payment</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s">&#39;CANCELED&#39;</span>
+<span class="c"># because payment already has a sid</span>
+<span class="n">payment</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>   <span class="c"># issues PUT /silver/payments</span>
+</pre></div>
 </div>
 </dd></dl>
 
@@ -133,7 +693,7 @@ when client is configured.</li>
 <span class="n">poundpay</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s">&#39;YOUR_DEVELOPER_SID&#39;</span><span class="p">,</span> <span class="s">&#39;YOUR_AUTH_TOKEN&#39;</span><span class="p">)</span>
 
 <span class="n">developer</span> <span class="o">=</span> <span class="n">poundpay</span><span class="o">.</span><span class="n">Developer</span><span class="o">.</span><span class="n">find_me</span><span class="p">()</span>
-<span class="k">assert</span> <span class="n">developer</span><span class="o">.</span><span class="n">sid</span><span class="p">,</span> <span class="s">&#39;YOUR_DEVELOPER_SID&#39;</span>
+<span class="k">assert</span> <span class="n">developer</span><span class="o">.</span><span class="n">sid</span> <span class="o">==</span> <span class="s">&#39;YOUR_DEVELOPER_SID&#39;</span>
 </pre></div>
 </div>
 </dd></dl>
