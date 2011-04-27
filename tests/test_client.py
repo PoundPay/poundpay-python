@@ -1,3 +1,4 @@
+import os
 import json
 import unittest
 
@@ -47,11 +48,18 @@ class TestClient(unittest.TestCase):
         with self.assertRaises(ValueError):
             Client(config['auth_token'], config['developer_sid'])
 
-    def test_default_api_version(self):
+    def test_default_api_version_when_explicity_set_to_None(self):
         config = self.production_config
         config['api_version'] = None
         client = Client(**config)
         self.assertTrue(client.base_url.endswith(Client.API_VERSION + '/'))
+
+    def test_default_api_url_when_explicity_set_to_None(self):
+        config = self.production_config
+        config['api_url'] = None
+        client = Client(**config)
+        self.assertTrue(client.base_url,
+                        os.path.join(client.API_URL, client.API_VERSION))
 
     def test_default_url_and_version(self):
         config = self.production_config
