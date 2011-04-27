@@ -27,7 +27,7 @@ def configure(developer_sid, auth_token, api_url=None, api_version=None):
 
     """
     if not api_url:
-        api_version = Client.API_URL
+        api_url = Client.API_URL
 
     if not api_version:
         api_version = Client.API_VERSION
