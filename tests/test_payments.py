@@ -71,10 +71,28 @@ class TestPayment(unittest.TestCase):
         kwargs = self.payment_arguments
         kwargs['status'] = 'ESCROWED'
         payment = Payment(**kwargs)
-        # payment.save()
+        with mock.patch.object(Payment, 'save') as patched_save:
+            payment.cancel()
+
+        patched_save.assert_called_once_with()
+        self.assertEqual(payment.status, 'CANCELED')
 
     def test_release_sets_status_to_released_and_issues_save(self):
-        pass
+        kwargs = self.payment_arguments
+        kwargs['status'] = 'ESCROWED'
+        payment = Payment(**kwargs)
+        with mock.patch.object(Payment, 'save') as patched_save:
+            payment.release()
+
+        patched_save.assert_called_once_with()
+        self.assertEqual(payment.status, 'RELEASED')
 
     def test_escrow_sets_status_to_escrowed_and_issues_save(self):
-        pass
+        kwargs = self.payment_arguments
+        kwargs['status'] = 'AUTHORIZED'
+        payment = Payment(**kwargs)
+        with mock.patch.object(Payment, 'save') as patched_save:
+            payment.escrow()
+
+        patched_save.assert_called_once_with()
+        self.assertEqual(payment.status, 'ESCROWED')
