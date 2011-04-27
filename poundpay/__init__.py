@@ -26,4 +26,10 @@ def configure(developer_sid, auth_token, api_url=None, api_version=None):
        assert developer.sid == 'YOUR_DEVELOPER_SID'
 
     """
+    if not api_url:
+        api_version = Client.API_URL
+
+    if not api_version:
+        api_version = Client.API_VERSION
+
     Resource.client = Client(developer_sid, auth_token, api_url, api_version)

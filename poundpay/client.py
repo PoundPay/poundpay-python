@@ -76,8 +76,12 @@ class Client(threading.local):
             raise ValueError('developer_sid and auth_token required')
         if not developer_sid.startswith('DV'):
             raise ValueError('developer_sid must start with DV')
+
+        if not api_url:
+            api_version = Client.API_URL
+
         if not api_version:
-            api_version = self.API_VERSION
+            api_version = Client.API_VERSION
 
         self.base_url = '%s/%s/' % (api_url, api_version)
         self.developer_sid = developer_sid
