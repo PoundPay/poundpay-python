@@ -100,7 +100,7 @@ class Resource(object):
            payment.save()   # issues PUT /silver/payments
 
         """
-        if hasattr(self, 'sid') or hasattr(self, 'id'):
+        if hasattr(self, 'sid'):
             attrs = self._update(**self.__dict__)
         else:
             attrs = self._create(**self.__dict__)
@@ -119,7 +119,7 @@ class Resource(object):
            payment = poundpay.Payment.find('PY...')
            payment.delete()   # issues a DELETE /silver/payment/PY...
            payment = poundpay.Payment.find('PY...')
-           assert payment.response.getcode() == 204
+           assert payment.response.getcode() == 404
 
         """
         self.client.delete(self._get_path(self.sid))
