@@ -1,0 +1,5 @@
+include README.rst
+include docs/*.rst docs/Makefile docs/*.py
+recursive-include docs/_static/ *
+recursive-include poundpay/ *
+recursive-include tests/ *
