@@ -4,6 +4,7 @@ PoundPay Python client library.
 See ``readme.rst`` for usage advice.
 
 """
+import os
 
 try:
     from setuptools import setup
@@ -11,13 +12,16 @@ except ImportError:
     from distutils.core import setup
 
 
-with open('README.rst') as f:
+PATH_TO_FILE = os.path.dirname(__file__)
+
+
+with open(os.path.join(PATH_TO_FILE, 'README.rst')) as f:
     long_description = f.read()
 
 
 setup(
     name='Poundpay',
-    version='0.1.0',
+    version='0.1.1',
     url='https://dev.poundpay.com/',
     license='BSD',
     author='Matin Tamizi, Mahmoud Abdelkader',
