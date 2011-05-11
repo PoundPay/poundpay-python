@@ -9,6 +9,13 @@ try:
 except ImportError:
     import json
 
+def _url_encode(obj):
+	'''Version of url encoder which strips out None values.'''
+	obj_copy = dict(obj) # make a copy of the dict, or convert a sequence of key-val pairs to a dict
+	null_keys = (key for key, val in obj_copy.iteritems() if val is None)
+	for key in null_keys:
+		del obj_copy[key]
+	return urlencode(obj_copy)
 
 class ClientResponse(object):
     """The response returned from any :class:`~poundpay.Client` HTTP method.
@@ -122,7 +129,7 @@ class Client(threading.local):
 
         """
         if params:
-            params = urlencode(params)
+            params = _url_encode(params)
             path = path.rstrip('/') + '/?' + params
         req = urllib2.Request(self.base_url + path)
         resp = self.opener.open(req)
@@ -152,7 +159,7 @@ class Client(threading.local):
                assert client_response.json[key] == value
 
         """
-        data = urlencode(params)
+        data = _url_encode(params)
         req = urllib2.Request(self.base_url + path, data)
         resp = self.opener.open(req)
         return ClientResponse(resp, resp.read())
@@ -175,7 +182,7 @@ class Client(threading.local):
 
         """
 
-        data = urlencode(params)
+        data = _url_encode(params)
         req = urllib2.Request(self.base_url + path, data)
         req.get_method = lambda: 'PUT'
         resp = self.opener.open(req)
