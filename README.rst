@@ -72,7 +72,11 @@ Serving IFRAME
         payment_sid: {{payment.sid}},
         success: handlePaymentSuccess,
         error: handlePaymentError,
-        cardholder_name: "Fred Nietzsche", // Optional
+        name: "Fred Nietzsche", // Optional
+        address_street: "990 Guerrero St", // Optional
+        address_city: "San Francisco", // Optional
+        address_state: "California", // Optional
+        address_zip: "94107", // Optional
         server: "https://www-sandbox.poundpay.com"  // Exclude for production
       });
     </script>
