@@ -69,14 +69,14 @@ Serving IFRAME
       }
 
       PoundPay.init({
-        payment_sid: {{payment.sid}},
+        payment_sid: "{{payment.sid}}",
         success: handlePaymentSuccess,
         error: handlePaymentError,
         name: "Fred Nietzsche", // Optional
         address_street: "990 Guerrero St", // Optional
         address_city: "San Francisco", // Optional
         address_state: "California", // Optional
-        address_zip: "94107", // Optional
+        address_zip: "94110", // Optional
         server: "https://www-sandbox.poundpay.com"  // Exclude for production
       });
     </script>
