@@ -35,7 +35,19 @@ class Payment(Resource):
 
     """
     _name = 'payments'
-
+    
+    def versions(self):
+        """Retrieves the list of past versions of the payment.
+        
+        Each item in the list is itself a Payment object.
+        """
+        cls = self.__class__
+        
+        versions = cls.client.get(cls._get_path(self.sid) + '?versions=all')
+        versions_json = versions.json['payments']
+        
+        return [cls(**version) for version in versions_json]
+    
     def escrow(self):
         """Escrows an ``AUTHORIZED`` payment by charging the authorized
         payment method associated with the ``AUTHORIZED`` payment
