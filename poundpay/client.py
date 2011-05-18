@@ -1,7 +1,7 @@
 import base64
 import threading
 import urllib2
-from urllib import urlencode
+from urllib import quote
 
 
 try:
@@ -9,13 +9,36 @@ try:
 except ImportError:
     import json
 
-def _url_encode(obj):
-    '''Version of url encoder which strips out None values.'''
-    obj_copy = dict(obj) # make a copy of the dict, or convert a sequence of key-val pairs to a dict
-    null_keys = [key for key, val in obj_copy.iteritems() if val is None]
-    for key in null_keys:
-        del obj_copy[key]
-    return urlencode(obj_copy)
+def _url_encode(query):
+    """Version of url encoder which strips out None values and encodes
+    Unicode as utf-8 before url-encoding.
+    
+    Logic partially copied from urllib.urlencode.
+    """
+    if hasattr(query, "items"):
+        query = query.items() # convert a mapping object to a list of tuples
+    else:
+        try:
+            # make sure query looks like a sequence of tuples (or looks empty)
+            if len(query) and not isinstance(query[0], tuple):
+                raise TypeError
+        except TypeError:
+            ty,va,tb = sys.exc_info()
+            raise TypeError, "not a valid non-string sequence or mapping object", tb
+    l = []
+    for k, v in query:
+        k = quote(str(k))
+        if v is None:
+            # skip None values
+            continue
+        elif isinstance(v, unicode):
+            # encode unicode as utf-8
+            v = quote(v.encode('utf-8'))
+        else:
+            v = quote(str(v))
+        
+        l.append('%s=%s' % (k, v))
+    return '&'.join(l)
 
 class ClientResponse(object):
     """The response returned from any :class:`~poundpay.Client` HTTP method.
