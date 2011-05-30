@@ -117,7 +117,7 @@ class Resource(object):
            import poundpay
            poundpay.configure('DEVELOPER_SID', 'AUTH_TOKEN')
            payment = poundpay.Payment.find('PY...')
-           payment.delete()   # issues a DELETE /silver/payment/PY...
+           payment.delete()   # issues a DELETE /silver/payments/PY...
            payment = poundpay.Payment.find('PY...')
            assert payment.response.getcode() == 404
 
