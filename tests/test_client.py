@@ -4,7 +4,7 @@ import unittest
 
 import mock
 
-from poundpay.client import Client, ClientResponse
+from poundpay.client import Client, ClientResponse, _url_encode
 
 
 class TestClientResponse(unittest.TestCase):
@@ -121,3 +121,55 @@ class TestClient(unittest.TestCase):
         with mock.patch.object(client.opener, 'open', new=mock_open):
             resp = client.put('payments/sid', resp_body_dict)
         self.assertEqual(resp.json, resp_body_dict)
+
+class TestURLEncode(unittest.TestCase):
+
+    def test_percentencodes(self):
+        query = {'item': '$@!'}
+        expected = 'item=%24%40%21'
+        self.assertEqual(_url_encode(query), expected)
+
+    def test_encodes_unicode(self):
+        query = {'item': u'\u2603'}
+        expected = 'item=%E2%98%83'
+        self.assertEqual(_url_encode(query), expected)
+
+    def test_encodes_dict(self):
+        query = {
+            'a': '1',
+            'b': '2',
+            'c': '3',
+        }
+        encoded = _url_encode(query)
+        self.assertEqual(set(['a=1', 'b=2', 'c=3']), set(encoded.split('&')))
+
+    def test_encodes_tuple_list(self):
+        query = [
+            ('a', '1'),
+            ('b', '2'),
+            ('c', '3'),
+        ]
+        encoded = _url_encode(query)
+        self.assertEqual(encoded, 'a=1&b=2&c=3')
+
+    def test_encodes_numbers(self):
+        query = [
+            ('a', 1),
+            ('b', '2'),
+            ('c', 3),
+        ]
+        encoded = _url_encode(query)
+        self.assertEqual(encoded, 'a=1&b=2&c=3')
+
+    def test_strips_none(self):
+        query = [
+            ('a', '1'),
+            ('b', None),
+            ('c', 3),
+        ]
+        encoded = _url_encode(query)
+        self.assertEqual(encoded, 'a=1&c=3')
+
+    def test_rejects_string_query(self):
+        query = 'test'
+        self.assertRaises(TypeError, _url_encode, query)
