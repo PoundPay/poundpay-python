@@ -10,22 +10,23 @@ try:
 except ImportError:
     import json
 
+
 def _url_encode(query):
     """Version of url encoder which strips out None values and encodes
     Unicode as utf-8 before url-encoding.
-    
     Logic partially copied from urllib.urlencode.
     """
     if hasattr(query, "items"):
-        query = query.items() # convert a mapping object to a list of tuples
+        query = query.items()  # convert a mapping object to a list of tuples
     else:
         try:
             # make sure query looks like a sequence of tuples (or looks empty)
             if len(query) and not isinstance(query[0], tuple):
                 raise TypeError
         except TypeError:
-            ty,va,tb = sys.exc_info()
-            raise TypeError, "not a valid non-string sequence or mapping object", tb
+            ty, va, tb = sys.exc_info()
+            except_str = 'not a valid non-string sequence or mapping object'
+            raise TypeError, except_str, tb
     l = []
     for k, v in query:
         k = quote(str(k))
@@ -37,9 +38,10 @@ def _url_encode(query):
             v = quote(v.encode('utf-8'))
         else:
             v = quote(str(v))
-        
+
         l.append('%s=%s' % (k, v))
     return '&'.join(l)
+
 
 class ClientResponse(object):
     """The response returned from any :class:`~poundpay.Client` HTTP method.
@@ -122,12 +124,14 @@ class Client(threading.local):
         authstring = base64.b64encode('%s:%s' % (developer_sid, auth_token))
         self.opener.addheaders.append(('Authorization', 'Basic ' + authstring))
 
-    def get(self, path, **params):
+    def get(self, path, headers=None, **params):
         """Issue a ``GET /path/``. If the ``/path/`` has a resource-sid
         associated with it, this will return the representation of the
         resource located at ``/path/`` that has that associated resource-sid.
 
         :param path: The resource location
+        :param headers: Optional parameter that should be a dictionary and
+           will be passed on the urllib2.Request object
         :param params: Optional parameters to `urllib.urlencode <http://docs.
            python.org/library/urllib.html#urllib.urlencode>`_ and append to
            ``path`` prefixed with a '?'.
@@ -155,15 +159,18 @@ class Client(threading.local):
         if params:
             params = _url_encode(params)
             path = path.rstrip('/') + '/?' + params
-        req = urllib2.Request(self.base_url + path)
+        current_url = self.base_url + path
+        req = urllib2.Request(current_url, headers=headers or {})
         resp = self.opener.open(req)
         return ClientResponse(resp, resp.read())
 
-    def post(self, path, params):
+    def post(self, path, params, headers=None):
         """Issue a ``POST /path/``.
 
         :param path: The resource location
         :param params: The parameters to create the resource with.
+        :param headers: Optional parameter that should be a dictionary and
+           will be passed on the urllib2.Request object
         :rtype: A :class:`~poundpay.ClientResponse`.
 
         ::
@@ -184,15 +191,18 @@ class Client(threading.local):
 
         """
         data = _url_encode(params)
-        req = urllib2.Request(self.base_url + path, data)
+        current_url = self.base_url + path
+        req = urllib2.Request(current_url, data, headers=headers or {})
         resp = self.opener.open(req)
         return ClientResponse(resp, resp.read())
 
-    def put(self, path, params):
+    def put(self, path, params, headers=None):
         """Issue a ``PUT /path/resource-sid``.
 
         :param path: The resource location + the resource's sid
         :param params: The parameters to update the resource with.
+        :param headers: Optional parameter that should be a dictionary and
+           will be passed on the urllib2.Request object
         :rtype: A :class:`~poundpay.ClientResponse`.
 
         ::
@@ -207,15 +217,18 @@ class Client(threading.local):
         """
 
         data = _url_encode(params)
-        req = urllib2.Request(self.base_url + path, data)
+        current_url = self.base_url + path
+        req = urllib2.Request(current_url, data, headers=headers or {})
         req.get_method = lambda: 'PUT'
         resp = self.opener.open(req)
         return ClientResponse(resp, resp.read())
 
-    def delete(self, path):
+    def delete(self, path, headers=None):
         """Issue a ``DELETE /path/resource-sid``.
 
         :param path: The resource location + the resource's sid
+        :param headers: Optional parameter that should be a dictionary and
+           will be passed on the urllib2.Request object
         :rtype: A :class:`~poundpay.ClientResponse`.
 
         ::
@@ -227,7 +240,8 @@ class Client(threading.local):
 
         """
 
-        req = urllib2.Request(self.base_url + path)
+        current_url = self.base_url + path
+        req = urllib2.Request(current_url, headers=headers or {})
         req.get_method = lambda: 'DELETE'
         resp = self.opener.open(req)
         return ClientResponse(resp, resp.read())

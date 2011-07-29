@@ -90,6 +90,25 @@ class TestClient(unittest.TestCase):
         self.assertEqual(resp.json, resp_dict)
         mock_open.return_value.read.assert_called_once_with()
 
+
+    def test_get_pass_header(self):
+        client = Client(**self.production_config)
+        resp_dict = {'foo': 'bar'}
+        mock_open = mock.Mock()
+        mock_open.return_value.read.return_value = json.dumps(resp_dict)
+        resp_header = {'foo':'bar'}
+        with mock.patch.object(client.opener,
+                               'open',
+                               mock_open,
+                               mocksignature=True), \
+             mock.patch('poundpay.client.urllib2') as urllib2_mock:
+            resp = client.get('payments',resp_header)
+        _args, kwargs = urllib2_mock.Request.call_args
+        self.assertEqual(resp.json, resp_dict)
+        self.assertEqual(kwargs['headers'], resp_header)
+        mock_open.return_value.read.assert_called_once_with()
+
+
     def test_post(self):
         client = Client(**self.production_config)
         resp_body_dict = {'foo': 'bar'}
@@ -101,6 +120,23 @@ class TestClient(unittest.TestCase):
             resp = client.post('payments', resp_body_dict)
         self.assertEqual(resp.json, resp_body_dict)
 
+    
+    def test_post_pass_header(self):
+        client = Client(**self.production_config)
+        resp_body_dict = {'foo': 'bar'}
+        mock_open = mock.mocksignature(client.opener.open)
+        mock_resp = mock.Mock()
+        mock_resp.read = mock.Mock(return_value=json.dumps(resp_body_dict))
+        mock_open.mock.return_value = mock_resp
+        resp_header = {'foo':'bar'}
+        with mock.patch.object(client.opener, 'open', new=mock_open), \
+             mock.patch('poundpay.client.urllib2') as urllib2_mock:
+            resp = client.post('payments', resp_body_dict,resp_header)
+        _args, kwargs = urllib2_mock.Request.call_args
+        self.assertEqual(kwargs['headers'], resp_header)
+        self.assertEqual(resp.json, resp_body_dict)
+        
+
     def test_delete(self):
         client = Client(**self.production_config)
         mock_open = mock.mocksignature(client.opener.open)
@@ -110,6 +146,22 @@ class TestClient(unittest.TestCase):
         with mock.patch.object(client.opener, 'open', new=mock_open):
             resp = client.delete('payments/sid')
         self.assertEqual(resp.json, {})
+
+
+    def test_delete_pass_header(self):
+        client = Client(**self.production_config)
+        mock_open = mock.mocksignature(client.opener.open)
+        mock_resp = mock.Mock()
+        mock_resp.read = mock.Mock(return_value=json.dumps({}))
+        mock_open.mock.return_value = mock_resp
+        resp_header = {'foo':'bar'}
+        with mock.patch.object(client.opener, 'open', new=mock_open), \
+             mock.patch('poundpay.client.urllib2') as urllib2_mock:
+            resp = client.delete('payments/sid',resp_header)
+        _args, kwargs = urllib2_mock.Request.call_args
+        self.assertEqual(kwargs['headers'], resp_header)
+        self.assertEqual(resp.json, {})
+
 
     def test_put(self):
         client = Client(**self.production_config)
@@ -121,6 +173,22 @@ class TestClient(unittest.TestCase):
         with mock.patch.object(client.opener, 'open', new=mock_open):
             resp = client.put('payments/sid', resp_body_dict)
         self.assertEqual(resp.json, resp_body_dict)
+
+    def test_put_pass_header(self):
+        client = Client(**self.production_config)
+        resp_body_dict = {'foo': 'bar'}
+        mock_open = mock.mocksignature(client.opener.open)
+        mock_resp = mock.Mock()
+        mock_resp.read = mock.Mock(return_value=json.dumps(resp_body_dict))
+        mock_open.mock.return_value = mock_resp
+        resp_header = {'foo':'bar'}
+        with mock.patch.object(client.opener, 'open', new=mock_open), \
+             mock.patch('poundpay.client.urllib2') as urllib2_mock:
+            resp = client.put('payments/sid', resp_body_dict,resp_header)
+        _args, kwargs = urllib2_mock.Request.call_args
+        self.assertEqual(kwargs['headers'], resp_header)
+        self.assertEqual(resp.json, resp_body_dict)
+
 
 class TestURLEncode(unittest.TestCase):
 
