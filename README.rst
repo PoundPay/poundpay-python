@@ -42,7 +42,7 @@ Creating a Payment
 ::
 
     payment = poundpay.Payment(
-        amount=10000,
+        amount=10000,   # in usd cents, not dollars
         payer_fee_amount=0,
         payer_email_address='fred@example.com',
         recipient_fee_amount=500,
