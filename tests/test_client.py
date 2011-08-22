@@ -239,5 +239,16 @@ class TestURLEncode(unittest.TestCase):
         self.assertEqual(encoded, 'a=1&c=3')
 
     def test_rejects_string_query(self):
-        query = 'test'
-        self.assertRaises(TypeError, _url_encode, query)
+        with self.assertRaises(ValueError) as exc:
+            _url_encode('test')
+
+        exception = exc.exception
+        self.assertEqual(exception.message, 'need more than 1 value to unpack')
+
+    def test_multi_query_dict_support(self):
+        query = [
+            ('a', '1'),
+            ('a', '2'),
+        ]
+        encoded = _url_encode(query)
+        self.assertEqual(encoded, 'a=1&a=2')
