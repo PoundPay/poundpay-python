@@ -1,9 +1,6 @@
 import base64
-import sys
 import threading
 import urllib2
-from urllib import quote
-
 
 try:
     import simplejson as json
@@ -11,36 +8,7 @@ except ImportError:
     import json
 
 
-def _url_encode(query):
-    """Version of url encoder which strips out None values and encodes
-    Unicode as utf-8 before url-encoding.
-    Logic partially copied from urllib.urlencode.
-    """
-    if hasattr(query, "items"):
-        query = query.items()  # convert a mapping object to a list of tuples
-    else:
-        try:
-            # make sure query looks like a sequence of tuples (or looks empty)
-            if len(query) and not isinstance(query[0], tuple):
-                raise TypeError
-        except TypeError:
-            ty, va, tb = sys.exc_info()
-            except_str = 'not a valid non-string sequence or mapping object'
-            raise TypeError, except_str, tb
-    l = []
-    for k, v in query:
-        k = quote(str(k))
-        if v is None:
-            # skip None values
-            continue
-        elif isinstance(v, unicode):
-            # encode unicode as utf-8
-            v = quote(v.encode('utf-8'))
-        else:
-            v = quote(str(v))
-
-        l.append('%s=%s' % (k, v))
-    return '&'.join(l)
+from poundpay.utils import url_encode as _url_encode
 
 
 class ClientResponse(object):
