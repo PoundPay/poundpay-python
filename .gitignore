@@ -12,3 +12,6 @@ dist/
 .ropeproject
 /tmp
 *~
+.settings
+.project
+.pydevproject
