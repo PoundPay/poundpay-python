@@ -2,6 +2,7 @@ from .client import Client, ClientResponse
 from .developers import Developer
 from .resource import Resource
 from .payments import Payment
+from .charge_permissions import ChargePermission
 
 
 __all__ = ['Client', 'ClientResponse', 'Developer', 'Resource', 'Payment']
