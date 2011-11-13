@@ -50,8 +50,21 @@ Creating a Payment
         description='Beats by Dr. Dre',
     ).save()
 
-Serving IFRAME
-``````````````
+
+Payment methods
+```````````````
+
+::
+
+    list_of_payments = poundpay.Payment.all()
+    payment = poundpay.Payment.find(payment_sid)
+    payment.escrow()   # AUTHORIZED -> ESCROWED.  Credit card is charged
+    payment.release()  # ESCROWED   -> RELEASED.  Recipient receives money
+    payment.cancel()   # ESCROWED   -> CANCELED.  Payer receives refund
+    
+
+Serving Payment IFRAME
+``````````````````````
 
 ::
 
@@ -80,18 +93,67 @@ Serving IFRAME
         server: "https://www-sandbox.poundpay.com"  // Exclude for production
       });
     </script>
+    
 
-
-Payment methods
-```````````````
+Creating a Charge Permission
+````````````````````````````
 
 ::
 
-    list_of_payments = poundpay.Payment.all()
-    payment = poundpay.Payment.find(payment_sid)
-    payment.escrow()   # AUTHORIZED -> ESCROWED.  Credit card is charged
-    payment.release()  # ESCROWED   -> RELEASED.  Recipient receives money
-    payment.cancel()   # ESCROWED   -> CANCELED.  Payer receives refund
+    charge_permission = poundpay.ChargePermission(
+        email_address='payer@example.com',
+    ).save()
+
+
+Deactivating a Charge Permission
+````````````````````````````````
+
+::
+
+    charge_permission = poundpay.ChargePermission.find(charge_permission_sid)
+    charge_permission.deactivate()
+
+
+ChargePermission methods
+````````````````````````
+
+::
+
+    list_of_payments = poundpay.ChargePermission.all()
+    charge_permission = poundpay.ChargePermission.find(charge_permission_sid)
+    charge_permission.deactivate()  # CREATED|ACTIVE -> INACTIVE.
+    
+
+Serving charge permission IFRAME
+````````````````````````````````
+
+::
+
+    <script src="https://www.poundpay.com/js/poundpay.js"></script>
+
+    <div id="pound-root"></div>
+
+    <script>
+      function handleChargePermissionSuccess() {
+        // do something
+      }
+
+      function handleChargePermissionError() {
+        // handle error
+      }
+
+      PoundPay.init({
+        charge_permission_sid: "{{charge_permission.sid}}",
+        success: handleChargePermissionSuccess,
+        error: handleChargePermissionError,
+        name: "Freddy Nietzsche", // Optional
+        address_street: "990 Guerrero St", // Optional
+        address_city: "San Francisco", // Optional
+        address_state: "California", // Optional
+        address_zip: "94110", // Optional
+        server: "https://www-sandbox.poundpay.com"  // Exclude for production
+      });
+    </script>
 
 
 Links
