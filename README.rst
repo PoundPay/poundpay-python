@@ -63,8 +63,8 @@ Payment methods
     payment.cancel()   # ESCROWED   -> CANCELED.  Payer receives refund
     
 
-Serving Payment IFRAME
-``````````````````````
+Serving the payment IFRAME
+``````````````````````````
 
 ::
 
@@ -121,11 +121,11 @@ ChargePermission methods
 
     list_of_payments = poundpay.ChargePermission.all()
     charge_permission = poundpay.ChargePermission.find(charge_permission_sid)
-    charge_permission.deactivate()  # CREATED|ACTIVE -> INACTIVE.
+    charge_permission.deactivate()  # CREATED or ACTIVE -> INACTIVE. Charge permission is deactivated and can no longer be used to authorize payments for the associated payer.
     
 
-Serving charge permission IFRAME
-````````````````````````````````
+Serving the charge permission IFRAME
+````````````````````````````````````
 
 ::
 
