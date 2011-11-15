@@ -3,6 +3,9 @@
 Copyright: (c) 2011 by the Werkzeug Team.
 
 """
+import base64
+import hashlib
+import hmac
 import inspect
 
 
@@ -104,3 +107,19 @@ def url_encode(obj, charset='utf-8', encode_keys=False, sort=False, key=None,
         tmp.append('%s=%s' % (_quote(key),
                               _quote_plus(value)))
     return separator.join(tmp)
+
+
+def calculate_callback_signature(url, auh_token, params={}):
+    """Calculates the expected signature for a callback based on
+    the callback url, developer auth token and request parameters.
+    
+    :param url: the callback url.
+    :param auth_token: your developer auth token.
+    :param params: parameters passed to your callback url as a dictionary.
+    """
+    data = url
+    for key in sorted(params.keys()):
+        data += '{0}{1}'.format(key, params[key])
+    signature = hmac.new(auh_token, data, hashlib.sha1).digest()
+    return base64.b64encode(signature)
+
