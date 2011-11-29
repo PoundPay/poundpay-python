@@ -72,7 +72,8 @@ Serving IFRAME
         payment_sid: "{{payment.sid}}",
         success: handlePaymentSuccess,
         error: handlePaymentError,
-        name: "Fred Nietzsche", // Optional
+        first_name: "Fred", // Optional
+        last_name: "Nietzsche", // Optional
         address_street: "990 Guerrero St", // Optional
         address_city: "San Francisco", // Optional
         address_state: "California", // Optional
