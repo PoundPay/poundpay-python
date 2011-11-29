@@ -36,6 +36,17 @@ class Payment(Resource):
     """
     _name = 'payments'
 
+    @classmethod
+    def batch_update(cls, *sids, **attrs):
+        """Batch updates payments identified by `sids` with fields and values
+        to specified by `attrs`.
+
+        """
+        attrs['sid'] = sids
+        resp = cls.client.put(cls._name, attrs)
+        payments = [Payment(**attrs) for attrs in resp.json[cls._name]]
+        return payments
+
     def versions(self):
         """Retrieves the list of past versions of the payment.
 
