@@ -154,7 +154,75 @@ Serving the charge permission IFRAME
         server: "https://www-sandbox.poundpay.com"  // Exclude for production
       });
     </script>
+    
+    
+Batching
+````````
 
+In some cases you may wish to batch authorize and escrow a collection of
+payments. By doing there will be only *one* payer charge for that collection of
+payments. Note that if you do batch authorize a group of payments that group
+must *also* be batch escrowed. Batching is designed for shopping carts.
+
+In order to use batching you simply need to pass `sids` for *all* payments in
+the collection you want to batch to the IFrame::
+
+  <script src="https://www.poundpay.com/js/poundpay.js"></script>
+
+    <div id="pound-root"></div>
+
+    <script>
+      function handlePaymentSuccess() {
+        // do something
+      }
+
+      function handlePaymentError() {
+        // handle error
+      }
+
+      PoundPay.init({
+        payment_sid: [
+            "{{payment1.sid}}"
+            "{{payment2.sid}}",
+            "{{payment3.sid}}"
+            ],
+        success: handlePaymentSuccess,
+        error: handlePaymentError,
+        name: "Fred Nietzsche", // Optional
+        address_street: "990 Guerrero St", // Optional
+        address_city: "San Francisco", // Optional
+        address_state: "California", // Optional
+        address_zip: "94110", // Optional
+        server: "https://www-sandbox.poundpay.com"  // Exclude for production
+      });
+    </script>
+    
+Alternatively if you are directly authorizing the payments using a charge
+permission::
+
+    Payments.batch_update(
+        payment1.sid, payment2.sid, payment3.sid,
+        status='AUTHORIZED') 
+        
+Finally you'll need to batch escrow the payments::
+
+    Payments.batch_update(
+        payment1.sid, payment2.sid, payment3.sid,
+        status='ESCROWED')
+        
+Notice that if you did the following instead an error would be triggered since
+batched payments *must* be authorized and escrowed collectively::
+
+    Payments.find(payment1.sid, status='ESCROWED').save()  # fails
+    
+However if you cancel some of the payments prior to batch escrow you should
+exclude them from the batch call::
+
+    Payments.find(payment1.sid, status='CANCEL').save()  # ok
+
+    Payments.batch_update(
+        payment2.sid, payment3.sid,
+        status='ESCROWED')
 
 Links
 `````
