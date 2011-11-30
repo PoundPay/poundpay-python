@@ -160,9 +160,12 @@ Batching
 ````````
 
 In some cases you may wish to batch authorize and escrow a collection of
-payments. By doing there will be only *one* payer charge for that collection of
-payments. Note that if you do batch authorize a group of payments that group
-must *also* be batch escrowed. Batching is designed for shopping carts.
+payments. By doing so there will be only *one* payer charge for that collection
+of payments. Note that if you do batch authorize a collection of payments that
+it must *also* be batch escrowed.
+
+Batching is designed for shopping carts where you want a collection of payments
+to appear to appear as a single charge.
 
 In order to use batching you simply need to pass `sids` for *all* payments in
 the collection you want to batch to the IFrame::
@@ -188,7 +191,8 @@ the collection you want to batch to the IFrame::
             ],
         success: handlePaymentSuccess,
         error: handlePaymentError,
-        name: "Fred Nietzsche", // Optional
+        first_name: "Fred", // Optional
+        last_name: "Nietzsche", // Optional
         address_street: "990 Guerrero St", // Optional
         address_city: "San Francisco", // Optional
         address_state: "California", // Optional
@@ -196,25 +200,25 @@ the collection you want to batch to the IFrame::
         server: "https://www-sandbox.poundpay.com"  // Exclude for production
       });
     </script>
-    
+
 Alternatively if you are directly authorizing the payments using a charge
 permission::
 
     Payments.batch_update(
         payment1.sid, payment2.sid, payment3.sid,
-        status='AUTHORIZED') 
-        
+        status='AUTHORIZED')
+
 Finally you'll need to batch escrow the payments::
 
     Payments.batch_update(
         payment1.sid, payment2.sid, payment3.sid,
         status='ESCROWED')
-        
+
 Notice that if you did the following instead an error would be triggered since
 batched payments *must* be authorized and escrowed collectively::
 
     Payments.find(payment1.sid, status='ESCROWED').save()  # fails
-    
+
 However if you cancel some of the payments prior to batch escrow you should
 exclude them from the batch call::
 
