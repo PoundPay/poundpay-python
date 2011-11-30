@@ -1,9 +1,11 @@
 from __future__ import unicode_literals
-import pprint
+import json
 import optparse
+import pprint
 
 import poundpay
-from flask import Flask, render_template, request, session, abort
+from flask import (
+    Flask, render_template, request, session, abort, make_response)
 
 import config
 
@@ -29,7 +31,9 @@ def create_user():
         'last_name': request.form['user_last_name'],
         'email_address': request.form['user_email_address'],
     }).save()
-    return pprint.pformat(user.__dict__)
+    response = make_response(json.dumps(user.__dict__))
+    response.headers['Content-Type'] = 'application/json'
+    return response
 
 
 @app.route('/charge_permission', methods=['POST'])
@@ -37,7 +41,9 @@ def create_charge_perm():
     charge_perm_details = request.form.to_dict()
     session['charge_perm_details'] = charge_perm_details
     charge_perm = poundpay.ChargePermission(**charge_perm_details).save()
-    return charge_perm.sid
+    response = make_response(json.dumps(charge_perm.__dict__))
+    response.headers['Content-Type'] = 'application/json'
+    return response
 
 
 @app.route('/charge_permission/find', methods=['POST'])
@@ -47,7 +53,9 @@ def find_charge_perm():
     if not charge_perms:
         abort(404)
     charge_perms = [charge_perm.__dict__ for charge_perm in charge_perms]
-    return pprint.pformat(charge_perms)
+    response = make_response(json.dumps(charge_perms))
+    response.headers['Content-Type'] = 'application/json'
+    return response
 
 
 @app.route('/charge_permission/deactivate', methods=['POST'])
@@ -55,14 +63,18 @@ def deactivate_charge_perm():
     charge_perm = poundpay.ChargePermission.find(sid=request.form['sid'])
     charge_perm.state = 'INACTIVE'
     charge = charge_perm.save()
-    return pprint.pformat(charge.__dict__)
+    response = make_response(json.dumps(charge.__dict__))
+    response.headers['Content-Type'] = 'application/json'
+    return response
 
 
 @app.route('/payment', methods=['POST'])
 def post_payment():
     payment_details = session['payment_details'] = request.form.to_dict()
     payment = poundpay.Payment(**payment_details).save()
-    return payment.sid
+    response = make_response(json.dumps(payment.__dict__))
+    response.headers['Content-Type'] = 'application/json'
+    return response
 
 
 @app.route('/payment/authorize', methods=['POST'])
