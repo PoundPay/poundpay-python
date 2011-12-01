@@ -53,9 +53,7 @@ def find_charge_perm():
     if not charge_perms:
         abort(404)
     charge_perms = [charge_perm.__dict__ for charge_perm in charge_perms]
-    response = make_response(json.dumps(charge_perms))
-    response.headers['Content-Type'] = 'application/json'
-    return response
+    return pprint.pformat(charge_perms)
 
 
 @app.route('/charge_permission/deactivate', methods=['POST'])
@@ -79,7 +77,7 @@ def post_payment():
 
 @app.route('/payment/authorize', methods=['POST'])
 def authorize_payment():
-    sids = request.form.getlist('sid')
+    sids = request.form.getlist('sid') or request.form.getlist('sid[]')
     if len(sids) > 1:
         payments = poundpay.Payment.batch_update(
             *sids, status='AUTHORIZED')
@@ -93,7 +91,7 @@ def authorize_payment():
 
 @app.route('/payment/escrow', methods=['POST'])
 def escrow_payment():
-    sids = request.form.getlist('sid')
+    sids = request.form.getlist('sid') or request.form.getlist('sid[]')
     if len(sids) > 1:
         payments = poundpay.Payment.batch_update(
             *sids, status='ESCROWED')
