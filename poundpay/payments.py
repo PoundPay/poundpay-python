@@ -26,7 +26,7 @@ class PaymentCancelError(PaymentError):
     pass
 
 
-_error_str_fmt = 'Payment status is {}. Only {} payments may be {}'
+_error_str_fmt = 'Payment state is {}. Only {} payments may be {}'
 
 
 class Payment(Resource):
@@ -66,14 +66,14 @@ class Payment(Resource):
         .. note::
 
            a :exc:`~poundpay.payments.PaymentEscrowError` is thrown if the
-           Payment's status is not ``AUTHORIZED``
+           Payment's state is not ``AUTHORIZED``
 
         """
-        if self.status != 'AUTHORIZED':
-            msg = _error_str_fmt.format(self.status, 'AUTHORIZED', 'ESCROWED')
+        if self.state != 'AUTHORIZED':
+            msg = _error_str_fmt.format(self.state, 'AUTHORIZED', 'ESCROWED')
             raise PaymentEscrowError(msg)
 
-        self.status = 'ESCROWED'
+        self.state = 'ESCROWED'
         self.save()
 
     def release(self):
@@ -83,14 +83,14 @@ class Payment(Resource):
         .. note::
 
            a :exc:`~poundpay.payments.PaymentReleaseError` is thrown
-           if the Payment's status is not ``ESCROWED``
+           if the Payment's state is not ``ESCROWED``
 
         """
-        if self.status != 'ESCROWED':
-            msg = _error_str_fmt.format(self.status, 'ESCROWED', 'RELEASED')
+        if self.state != 'ESCROWED':
+            msg = _error_str_fmt.format(self.state, 'ESCROWED', 'RELEASED')
             raise PaymentReleaseError(msg)
 
-        self.status = 'RELEASED'
+        self.state = 'RELEASED'
         self.save()
 
     def cancel(self):
@@ -100,12 +100,12 @@ class Payment(Resource):
         .. note::
 
            a :exc:`~poundpay.payments.PaymentCancelError` is thrown
-           if the Payment's status is not ``ESCROWED``
+           if the Payment's state is not ``ESCROWED``
 
         """
-        if self.status != 'ESCROWED':
-            msg = _error_str_fmt.format(self.status, 'ESCROWED', 'CANCELED')
+        if self.state != 'ESCROWED':
+            msg = _error_str_fmt.format(self.state, 'ESCROWED', 'CANCELED')
             raise PaymentCancelError(msg)
 
-        self.status = 'CANCELED'
+        self.state = 'CANCELED'
         self.save()

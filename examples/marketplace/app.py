@@ -81,9 +81,9 @@ def authorize_payment():
     sids = request.form.getlist('sid') or request.form.getlist('sid[]')
     if len(sids) > 1:
         payments = poundpay.Payment.batch_update(
-            *sids, status='AUTHORIZED')
+            *sids, state='AUTHORIZED')
     else:
-        payments = [poundpay.Payment(sid=sids[0], status='AUTHORIZED').save()]
+        payments = [poundpay.Payment(sid=sids[0], state='AUTHORIZED').save()]
     if len(payments) == 1:
         return pprint.pformat(payments[0].__dict__)
     else:
@@ -95,9 +95,9 @@ def escrow_payment():
     sids = request.form.getlist('sid') or request.form.getlist('sid[]')
     if len(sids) > 1:
         payments = poundpay.Payment.batch_update(
-            *sids, status='ESCROWED')
+            *sids, state='ESCROWED')
     else:
-        payments = [poundpay.Payment(sid=sids[0], status='ESCROWED').save()]
+        payments = [poundpay.Payment(sid=sids[0], state='ESCROWED').save()]
     if len(payments) == 1:
         return pprint.pformat(payments[0].__dict__)
     else:

@@ -6,7 +6,7 @@ import poundpay
 from poundpay import ChargePermission
 
 
-CHARGE_PERMISSION_STATUSES = frozenset([
+CHARGE_PERMISSION_STATES = frozenset([
     'CREATED',
     'ACTIVE',
     'INACTIVE',
@@ -31,24 +31,24 @@ class TestChargePermission(unittest.TestCase):
         
     def test_deactivate_throws_exception_if_INACTIVE(self):
         charge_permission = ChargePermission(**self.arguments)
-        charge_permission.status = 'INACTIVE'
+        charge_permission.state = 'INACTIVE'
         with self.assertRaises(poundpay.charge_permissions.ChargePermissionDeactivateError):
             charge_permission.deactivate()
 
     def test_deactivate_when_CREATED(self):
         kwargs = self.arguments
-        kwargs['status'] = 'CREATED'
+        kwargs['state'] = 'CREATED'
         charge_permission = ChargePermission(**kwargs)
         with mock.patch.object(ChargePermission, 'save') as patched_save:
             charge_permission.deactivate()
         patched_save.assert_called_once_with()
-        self.assertEqual(charge_permission.status, 'INACTIVE')
+        self.assertEqual(charge_permission.state, 'INACTIVE')
         
     def test_deactivate_when_ACTIVE(self):
         kwargs = self.arguments
-        kwargs['status'] = 'ACIVE'
+        kwargs['state'] = 'ACIVE'
         charge_permission = ChargePermission(**kwargs)
         with mock.patch.object(ChargePermission, 'save') as patched_save:
             charge_permission.deactivate()
         patched_save.assert_called_once_with()
-        self.assertEqual(charge_permission.status, 'INACTIVE')
+        self.assertEqual(charge_permission.state, 'INACTIVE')

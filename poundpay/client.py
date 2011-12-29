@@ -176,11 +176,11 @@ class Client(threading.local):
         ::
 
            client = Client('YOUR_DEVELOPER_SID', 'YOUR_AUTH_TOKEN')
-           data = {'status': 'CANCELED'}
+           data = {'state': 'CANCELED'}
            client_response = client.put('/silver/payments/PY...', data)
            assert client_response.response.getcode() == 201
            assert isinstance(client_response.json, dict)
-           assert client_response.json['status'] == 'CANCELED'
+           assert client_response.json['state'] == 'CANCELED'
 
         """
 
