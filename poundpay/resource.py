@@ -95,7 +95,7 @@ class Resource(object):
            payment = poundpay.Payment(**data)
            payment.save()   # issues POST /silver/payments
            assert payment.sid.startswith('PY')
-           payment.status = 'CANCELED'
+           payment.state = 'CANCELED'
            # because payment already has a sid
            payment.save()   # issues PUT /silver/payments
 
