@@ -1,11 +1,16 @@
+
 from .client import Client, ClientResponse
 from .developers import Developer
 from .resource import Resource
 from .payments import Payment
 from .charge_permissions import ChargePermission
+from .users import User
 
 
-__all__ = ['Client', 'ClientResponse', 'Developer', 'Resource', 'Payment']
+__all__ = [
+    'Client', 'ClientResponse', 'Developer', 'Resource', 'Payment',
+    'User', 'ChargePermission',
+    ]
 
 
 def configure(developer_sid, auth_token, api_url=None, api_version=None):

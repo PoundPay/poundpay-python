@@ -14,21 +14,21 @@ CHARGE_PERMISSION_STATES = frozenset([
 
 
 class TestChargePermission(unittest.TestCase):
-    
+
     def setUp(self):
         poundpay.configure(**self.config)
 
     @property
     def config(self):
         return {'developer_sid': 'DVxxx', 'auth_token': 'AUTH_TOKEN'}
-    
+
     @property
     def arguments(self):
         return {
             'email_address': u'payer@example.com',
             'sid': u'CPxxx',
         }
-        
+
     def test_deactivate_throws_exception_if_INACTIVE(self):
         charge_permission = ChargePermission(**self.arguments)
         charge_permission.state = 'INACTIVE'
@@ -43,7 +43,7 @@ class TestChargePermission(unittest.TestCase):
             charge_permission.deactivate()
         patched_save.assert_called_once_with()
         self.assertEqual(charge_permission.state, 'INACTIVE')
-        
+
     def test_deactivate_when_ACTIVE(self):
         kwargs = self.arguments
         kwargs['state'] = 'ACIVE'
