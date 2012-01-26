@@ -4,7 +4,9 @@ import unittest
 
 import mock
 
-from poundpay.client import Client, ClientResponse, _url_encode
+from poundpay.client import (
+    Client, ClientResponse, _url_encode, ClientException
+    )
 
 
 class TestClientResponse(unittest.TestCase):
@@ -22,13 +24,14 @@ class TestClientResponse(unittest.TestCase):
 
     def test_str(self):
         response = mock.Mock()
+        response.msg = 'OK'
         response.getcode.return_value = '200'
         client_response = ClientResponse(
             response,
             json.dumps({'foo': 'bar'})
             )
         self.assertEqual(
-            str(client_response), "[Error?(False)][200] - {'foo': 'bar'}"
+            str(client_response), "[200 OK] - {'foo': 'bar'}"
             )
 
 
@@ -113,9 +116,12 @@ class TestClientHTTPOperation(unittest.TestCase):
         response_handler = mock.Mock()
         response_handler.default_open.return_value = response
         self.client.opener.handle_open['default'] = [response_handler]
-        resp = self.client.post('payments', self.resp_dict)
+        with self.assertRaises(ClientException) as exception:
+            self.client.post('payments', self.resp_dict)
+        exc = exception.exception
         self.assertEqual(
-            str(resp), "[Error?(True)][403] - {'message': 'unauthorized yo'}"
+            str(exc.args[0]), ("HTTP Error 403: Unauthorized :: "
+                               "{'message': 'unauthorized yo'}")
             )
 
     def test_http_success(self):
@@ -130,7 +136,7 @@ class TestClientHTTPOperation(unittest.TestCase):
         self.client.opener.handle_open['default'] = [response_handler]
         resp = self.client.post('payments', self.resp_dict)
         self.assertEqual(
-            str(resp), "[Error?(False)][200] - {'hi': 'there'}"
+            str(resp), "[200 OK] - {'hi': 'there'}"
             )
 
     def test_post(self):

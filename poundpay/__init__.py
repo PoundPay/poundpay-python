@@ -1,5 +1,5 @@
 
-from .client import Client, ClientResponse
+from .client import Client, ClientResponse, ClientException
 from .developers import Developer
 from .resource import Resource
 from .payments import Payment

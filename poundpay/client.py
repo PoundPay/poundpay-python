@@ -48,22 +48,21 @@ class ClientResponse(object):
 
         return json.loads(self.data)
 
-    @property
-    def is_error(self):
-        if not self.response:
-            raise ValueError('Response is None. is_error is undetermined')
-        return not (200 <= int(self.response.getcode()) < 300)
-
     def __str__(self):
-        string_representation = ''
-        if self.response:
-            string_representation = '[Error?(%s)][%s] - %s'
-            string_representation %= (
-                self.is_error,
-                self.response.getcode(),
-                self.json
-                )
-        return string_representation
+        return '[%s %s] - %s' % (
+            self.response.getcode(),
+            self.response.msg,
+            self.json
+            )
+
+
+class ClientException(Exception):
+
+    def __init__(self, error_response):
+        self.response = ClientResponse(error_response, error_response.read())
+        super(ClientException, self).__init__(
+            '%s :: %s' % (error_response, self.response.json)
+            )
 
 
 class PoundPayAPIDefaultErrorHandler(urllib2.HTTPDefaultErrorHandler):
@@ -72,7 +71,7 @@ class PoundPayAPIDefaultErrorHandler(urllib2.HTTPDefaultErrorHandler):
         http_error = urllib2.HTTPError(
             req.get_full_url(), code, msg, hdrs, fp
             )
-        return http_error
+        raise ClientException(http_error)
 
 
 class Client(threading.local):
