@@ -48,6 +48,33 @@ class ClientResponse(object):
 
         return json.loads(self.data)
 
+    @property
+    def is_error(self):
+        if not self.response:
+            raise ValueError('Response is None. is_error is undetermined')
+        return not (200 <= int(self.response.getcode()) < 300)
+
+    def __str__(self):
+        string_representation = ''
+        if self.response:
+            string_representation = '[Error?(%s)][%s] - %s'
+            string_representation %= (
+                self.is_error,
+                self.response.getcode(),
+                self.json
+                )
+        return string_representation
+
+
+class PoundPayAPIDefaultErrorHandler(urllib2.HTTPDefaultErrorHandler):
+
+    def http_error_default(self, req, fp, code, msg, hdrs):
+        print req, fp, code, msg, hdrs
+        http_error = urllib2.HTTPError(
+            req.get_full_url(), code, msg, hdrs, fp
+            )
+        return http_error
+
 
 class Client(threading.local):
     """Client is a thread-local object that is instantiated as a class
@@ -87,7 +114,9 @@ class Client(threading.local):
         self.base_url = '%s/%s/' % (api_url, api_version)
         self.developer_sid = developer_sid
 
-        opener_handlers = opener_handlers if opener_handlers else []
+        if not opener_handlers:
+            opener_handlers = [PoundPayAPIDefaultErrorHandler]
+
         self.opener = urllib2.build_opener(*opener_handlers)
         authstring = base64.b64encode('%s:%s' % (developer_sid, auth_token))
         self.opener.addheaders.append(('Authorization', 'Basic ' + authstring))
