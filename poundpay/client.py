@@ -69,7 +69,6 @@ class ClientResponse(object):
 class PoundPayAPIDefaultErrorHandler(urllib2.HTTPDefaultErrorHandler):
 
     def http_error_default(self, req, fp, code, msg, hdrs):
-        print req, fp, code, msg, hdrs
         http_error = urllib2.HTTPError(
             req.get_full_url(), code, msg, hdrs, fp
             )
