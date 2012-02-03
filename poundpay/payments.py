@@ -94,17 +94,33 @@ class Payment(Resource):
         self.save()
 
     def cancel(self):
-        """Cancels an ``ESCROWED`` payment by refunding the payer. All
-        PoundPay fees are refunded back to the developer, as well.
+        """
+        Cancels a payment.
+
+         - If the payment's state is ``ESCROWED``, it will refunding
+           the payer. All PoundPay fees are refunded back to the
+           developer.
+
+         - If the payment's state is ``AUTHORIZED``, it will void the
+           authorization.
+
+         - If the payment's state is ``CREATED``, it will just mark
+           the payment as canceled and no further operations can
+           proceed on the payment.
 
         .. note::
 
            a :exc:`~poundpay.payments.PaymentCancelError` is thrown
-           if the Payment's state is not ``ESCROWED``
+           if the Payment's state is not in the appropriate state.
 
         """
-        if self.state != 'ESCROWED':
-            msg = _error_str_fmt.format(self.state, 'ESCROWED', 'CANCELED')
+        states = ('CREATED', 'AUTHORIZED', 'ESCROWED',)
+        if self.state not in states:
+            msg = _error_str_fmt.format(
+                self.state,
+                ', '.join(states),
+                'CANCELED',
+                )
             raise PaymentCancelError(msg)
 
         self.state = 'CANCELED'

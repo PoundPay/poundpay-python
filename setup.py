@@ -21,7 +21,7 @@ with open(os.path.join(PATH_TO_FILE, 'README.rst')) as f:
 
 setup(
     name='Poundpay',
-    version='0.5',
+    version='0.5.1',
     url='https://dev.poundpay.com/',
     license='BSD',
     author='Matin Tamizi, Mahmoud Abdelkader',

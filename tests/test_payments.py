@@ -60,12 +60,22 @@ class TestPayment(unittest.TestCase):
 
     def test_cancel_throws_exception_if_not_ESCROWED(self):
         payment = Payment(**self.payment_arguments)
+        applicable_states = ('CREATED', 'AUTHORIZED', 'ESCROWED',)
         for state in PAYMENT_STATES:
-            if state == 'ESCROWED':
+            if state in applicable_states:
                 continue
             payment.state = state
-            with self.assertRaises(poundpay.payments.PaymentCancelError):
+            with self.assertRaises(poundpay.payments.PaymentCancelError) as e:
                 payment.cancel()
+            exc = e.exception
+            self.assertEqual(
+                exc.args[0],
+                 'Payment state is {}. Only {} payments may be {}'.format(
+                     state,
+                     ', '.join(applicable_states),
+                     'CANCELED'
+                     )
+                )
 
     def test_cancel_sets_state_to_cancel_and_issues_save(self):
         kwargs = self.payment_arguments
